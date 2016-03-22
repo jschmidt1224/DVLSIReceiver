@@ -1,4 +1,3 @@
-	
 	//ALU operations
 	// typedef enum{ALU_NOP, ALU_ADD, ALU_ADD_I, ALU_IADD, ALU_IADD_I, ALU_SUB, ALU_SUB_I, ALU_ISUB, ALU_ISUB_I, ALU_MUL, ALU_MUL_I, ALU_IMUL, ALU_IMUL_I, ALU_MAC, ALU_SQR, ALU_AND, ALU_AND_I, ALU_OR, ALU_OR_I, ALU_XOR, ALU_XOR_I, ALU_SHLA, ALU_SHRA, ALU_SHLL, ALU_SHRL, ALU_ROL, ALU_ROR} ALU
 
@@ -34,6 +33,8 @@
 `define ALU_ROL	    8'd25
 `define ALU_ROR     8'd26
 `define ALU_BEZ     8'd27
+`define ALU_BNEZ		8'd28
+`define ALU_BEQ			8'd29
 
 
 	//Flow operations
@@ -43,7 +44,7 @@
 `define FLOW_JMP  	3'd1
 `define FLOW_BEZ  	3'd2
 `define FLOW_BNEZ 	3'd3
-`define FLOW_BEQ  	3'd4	
+`define FLOW_BEQ  	3'd4
 `define FLOW_HEAVY	3'd5  //For that time of the month
 	//Memory operations
 //	typedef enum{MEM_NONE, MEM_PUSH, MEM_POP, MEM_LD, MEM_ST, MEM_LD_IMM} MEM		//Last one is load immediate
@@ -59,15 +60,15 @@
 
 `define FALSE 1'b0
 `define TRUE  1'b1
-	
-//	typedef reg struct packed{
+
+/	typedef reg struct packed{
 //		ALU				alu				// alu mode
 //		BOOLEAN 	r_w				// ???
 //		FLOW			flow				// flow control
 //	} OPERAND
 
 
-		
+
 `define INST_WORD_LEN  32
 `define REG_WORD_LEN   16
 `define REG_ADDR_LEN   16
@@ -78,4 +79,3 @@
 //		reg_word		rs, rt, rd
 //		bit [15:0]	addr 					//16 bit address
 //	} DECODED
-

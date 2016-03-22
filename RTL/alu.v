@@ -3,36 +3,8 @@
 module ALU (opcode, A, B, shift, Y);
     parameter N = 16; // Bits in operand
     parameter E = 17; // Extra bit
-    parameter C = 6;  // Bits in opcode
+    parameter C = 8;  // Bits in opcode
     parameter S = 5;  // Bits in shift
-
-    parameter ALU_NOP = 0;
-    parameter ALU_ADD = 1;
-    parameter ALU_ADD_I = 2;
-    parameter ALU_IADD = 3;
-    parameter ALU_IADD_I = 4;
-    parameter ALU_SUB = 5;
-    parameter ALU_SUB_I = 6;
-    parameter ALU_ISUB = 7;
-    parameter ALU_ISUB_I = 8;
-    parameter ALU_MUL = 9;
-    parameter ALU_MUL_I = 10;
-    parameter ALU_IMUL = 11;
-    parameter ALU_IMUL_I = 12;
-    parameter ALU_MAC = 13;
-    parameter ALU_SQR = 14;
-    parameter ALU_AND = 15;
-    parameter ALU_AND_I = 16;
-    parameter ALU_OR = 17;
-    parameter ALU_OR_I = 18;
-    parameter ALU_XOR = 19;
-    parameter ALU_XOR_I = 20;
-    parameter ALU_SHLA = 21;
-    parameter ALU_SHRA = 22;
-    parameter ALU_SHLL = 23;
-    parameter ALU_SHRL = 24;
-    parameter ALU_ROL = 25;
-    parameter ALU_ROR = 26;
 
     reg     [E-1:0] tmp; // For overflow/underflow calculations
 
@@ -52,43 +24,46 @@ module ALU (opcode, A, B, shift, Y);
         // tmp = 17'bxxxxxxxxxxxxxxxx;
 
         case (opcode)
-            ALU_NOP: Y = 16'bxxxxxxxxxxxxxxxx;
+            `ALU_NOP: Y = 16'bxxxxxxxxxxxxxxxx;
             // ALU_ADD: tmp = (A << shift) + B;
-            ALU_ADD: tmp = (A << 5) + B;
-            ALU_ADD_I: tmp = A + B;
+            `ALU_ADD: tmp = (A << 5) + B;
+            `ALU_ADD_I: tmp = A + B;
             // ALU_IADD: tmp = (A << shift) + B;
-            ALU_IADD: tmp = (A << 5) + B;
-            ALU_IADD_I: tmp = A + B;
+            `ALU_IADD: tmp = (A << 5) + B;
+            `ALU_IADD_I: tmp = A + B;
             // ALU_SUB: tmp = B - (A << shift);
-            ALU_SUB: tmp = B - (A << 5);
-            ALU_SUB_I: tmp = B - A;
+            `ALU_SUB: tmp = B - (A << 5);
+            `ALU_SUB_I: tmp = B - A;
             // ALU_ISUB: tmp = B - (A << shift);
-            ALU_ISUB: tmp = B - (A << 5);
-            ALU_ISUB_I: tmp = B - A;
-            ALU_MUL: tmp = (A << 12) * (B << 12);
-            ALU_MUL_I: tmp = (A * B);
-            ALU_IMUL: tmp = ((A << 12) * (B << 12));
-            ALU_IMUL_I: tmp = (A * B);
+            `ALU_ISUB: tmp = B - (A << 5);
+            `ALU_ISUB_I: tmp = B - A;
+            `ALU_MUL: tmp = (A << 12) * (B << 12);
+            `ALU_MUL_I: tmp = (A * B);
+            `ALU_IMUL: tmp = ((A << 12) * (B << 12));
+            `ALU_IMUL_I: tmp = (A * B);
             // ALU_MAC: ;
             // ALU_SQR: ;
-            ALU_AND: Y = (A & B);
-            ALU_AND_I: Y = (A & B);
-            ALU_OR: Y = (A | B);
-            ALU_OR_I: Y = (A | B);
-            ALU_XOR: Y = (A ^ B);
-            ALU_XOR_I: Y = (A ^ B);
+            `ALU_AND: Y = (A & B);
+            `ALU_AND_I: Y = (A & B);
+            `ALU_OR: Y = (A | B);
+            `ALU_OR_I: Y = (A | B);
+            `ALU_XOR: Y = (A ^ B);
+            `ALU_XOR_I: Y = (A ^ B);
             // ALU_SHLA: Y = A <<< shift;
             // ALU_SHRA: Y = A >>> shift;
-            ALU_SHLA: Y = A <<< 5;
-            ALU_SHRA: Y = A >>> 5;
+            `ALU_SHLA: Y = A <<< 5;
+            `ALU_SHRA: Y = A >>> 5;
             // ALU_SHRL: Y = B >> shift;
             // ALU_SHRL: Y = B >> shift;
-            ALU_SHLL: Y = A << 5;
-            ALU_SHLL: Y = A << 5;
+            `ALU_SHLL: Y = A << 5;
+            `ALU_SHLL: Y = A << 5;
             // ALU_ROL: Y = {A[N-1-shift:0], A[N-1:N-shift]};
             // ALU_ROR: Y = {A[shift-1:0], A[N-1:shift]};
-            ALU_ROL: Y = {A[N-1-5:0], A[N-1:N-5]};
-            ALU_ROR: Y = {A[5-1:0], A[N-1:5]};
+            `ALU_ROL: Y = {A[N-1-5:0], A[N-1:N-5]};
+            `ALU_ROR: Y = {A[5-1:0], A[N-1:5]};
+            `ALU_BEZ: Y = A;
+            `ALU_BNEZ: Y = A ^ 16'd0;
+            `ALU_BEQ: Y = A ^ B;
             default: Y = 16'bxxxxxxxxxxxxxxxx;
         endcase
 
