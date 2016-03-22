@@ -50,10 +50,11 @@ module ALU (opcode, A, B, shift, Y);
 
     output  [N-1:0] Y;
     reg     [N-1:0] Y;
-	
+
+    reg     [(N*2)-1:0] tmp_rotate;    //temp variable for rotating operations
     always @(*) begin
         tmp = 17'bxxxxxxxxxxxxxxxx;
-
+	tmp_rotate = 64'hxxxx;
         case (opcode)
             `ALU_NOP:		Y = 16'b0000000000000000;
             `ALU_ADD:	 	tmp = (A << shift) + B;
@@ -78,8 +79,14 @@ module ALU (opcode, A, B, shift, Y);
             `ALU_SHRA: 		Y = A >>> shift;
             `ALU_SHRL: 		Y = B >> shift;
             `ALU_SHRL: 		Y = B >> shift;
-            `ALU_ROL: 		Y = {A[N-1-shift:0], A[N-1:N-shift]};
-            `ALU_ROR: 		Y = {A[shift-1:0], A[N-1:shift]};
+            `ALU_ROL: begin
+ 		tmp_rotate = {A,A} >> shift;
+		Y = tmp_rotate [31:0];
+	    end
+            `ALU_ROR: begin
+		tmp_rotate = {A,A} << shift;
+		Y = tmp_rotate [31:0];
+	    end
             //`ALU_ROL: 		Y = {A[N-1-5:0], A[N-1:N-5]};
             //`ALU_ROR: 		Y = {A[5-1:0], A[N-1:5]};
             default: 		Y = 16'bxxxxxxxxxxxxxxxx;
