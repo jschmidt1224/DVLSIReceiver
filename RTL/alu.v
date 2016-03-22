@@ -18,8 +18,9 @@ module ALU (opcode, A, B, shift, Y);
     input   [S-1:0] shift;
     wire    [S-1:0] shift;
 
-    output  [N-1:0] Y;
-    reg     [N-1:0] Y;
+    output  signed [N-1:0] out;
+		wire    signed [N-1:0] out;
+    reg     signed [N-1:0] Y;
 
     reg     [(N*2)-1:0] tmp_rotate;    //temp variable for rotating operations
     always @(*) begin
@@ -63,6 +64,7 @@ module ALU (opcode, A, B, shift, Y);
         endcase
 
         if (tmp != 17'bxxxxxxxxxxxxxxxxx) begin
+						
             if (tmp > 16'b0111111111111111)
                 Y = 16'b0111111111111111;
             else if (tmp < 16'b1111111111111111)

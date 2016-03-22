@@ -1,0 +1,119 @@
+*** Message Type: info ***
+When: Tue Mar 22 02:23:00 PM EDT 2016
+SimVision started.
+Version: TOOL:  simvision(64)   15.10-s011
+User: schmid
+Host: ice07.ee.cooper.edu
+Platform: Linux/x86_64/2.6.32-573.12.1.el6.x86_64
+Started: Tue Mar 22 02:23:00 PM EDT 2016
+Command: /afs/ee.cooper.edu/dist/cadence/installs/incisive/tools.lnx86/simvision/bin/64bit/simvision.exe -connect dc:ice07.ee.cooper.edu:56034 -64BIT -nocopyright
+Work Directory: /afs/ee.cooper.edu/user/s/c/schmid/DVLSIReceiver
+ 
+*** Message Type: info ***
+When: Tue Mar 22 02:23:01 PM EDT 2016
+Create browser window: "Design Browser 1"
+ 
+*** Message Type: info ***
+When: Tue Mar 22 02:23:02 PM EDT 2016
+Create console window: "Console"
+ 
+*** Message Type: info ***
+When: Tue Mar 22 02:23:03 PM EDT 2016
+Connect to Simulator
+      Design: worklib.ALU_tb:v
+   Languages: verilog
+   Simulator: NC-Sim
+     Version: TOOL:   ncsim(64)       15.10-s011
+        User: schmid
+        Host: ice07.ee.cooper.edu
+Time Started: Tue Mar 22 02:22:58 PM EDT 2016
+  Process ID: 26274
+   Directory: /afs/ee.cooper.edu/user/s/c/schmid/DVLSIReceiver
+     Command: irun -gui -access rwc Testbench/ALU_tb.v
+
+ 
+*** Message Type: info ***
+When: Tue Mar 22 02:23:04 PM EDT 2016
+Create utility window: "Properties"
+ 
+*** Message Type: info ***
+When: Tue Mar 22 02:23:13 PM EDT 2016
+Create waveform window: "Waveform 1"
+ 
+*** Message Type: error ***
+When: Tue Mar 22 02:23:53 PM EDT 2016
+can't find node "27" in ::tree1
+    (object "::replicator::parts35" method "::replicator::Parts::run" )
+    invoked from within
+"# Compiled -- no source code available
+error "called a copy of a compiled script""
+    (procedure "replicator::capture" line 1)
+    invoked from within
+"replicator::capture $this  -as SV_WAVEFORM -items $_dragsel  -progresscommand [_getProgressCommand configure "Capturing signals..."]"
+    (object "::.waveWindow0.work.user.waveset" method "::WaveSet::_drag" body line 32)
+    invoked from within
+"::.waveWindow0.work.user.waveset _drag SV_WAVEFORM"
+    (in namespace inscope "::WaveSet" script line 1)
+    invoked from within
+"namespace inscope ::WaveSet {::.waveWindow0.work.user.waveset _drag SV_WAVEFORM}"
+    invoked from within
+"list  {SV_WAVEFORM} [namespace inscope ::WaveSet {::.waveWindow0.work.user.waveset _drag SV_WAVEFORM}] {SV_SIGNAL} [namespace inscope ::WaveSet {::.wa..."
+    invoked from within
+"list {copy} [list  {SV_WAVEFORM} [namespace inscope ::WaveSet {::.waveWindow0.work.user.waveset _drag SV_WAVEFORM}] {SV_SIGNAL} [namespace inscope ::W..."
+    ("uplevel" body line 1)
+    invoked from within
+"uplevel \#0 $cmd"
+    (procedure "tkdnd::_init_drag" line 10)
+    invoked from within
+"tkdnd::_init_drag 0 $window  "press" 0 0"
+    ("drag" arm line 11)
+    invoked from within
+"switch $method {
+    bindtarget {
+      switch [llength $args] {
+        0 {return [tkdnd::compat::bindtarget0 $window]}
+        1 {return [tkdnd::com..."
+    (procedure "::dnd" line 4)
+    invoked from within
+"::dnd drag .waveWindow0.work.user.waveset.signallist -actions copy -id {26277 ::.waveWindow0.work.user.waveset}"
+    ("eval" body line 1)
+    invoked from within
+"# Compiled -- no source code available
+error "called a copy of a compiled script""
+    (procedure "cwidgets::dnd" line 1)
+    invoked from within
+"cwidgets::dnd drag .waveWindow0.work.user.waveset.signallist -actions copy -id {26277 ::.waveWindow0.work.user.waveset}"
+    ("eval" body line 1)
+    invoked from within
+"# Compiled -- no source code available
+error "called a copy of a compiled script""
+    (procedure "::svdnd" line 1)
+    invoked from within
+"::svdnd drag $win -actions {copy} -id [list [pid] $this]"
+    (object "::.waveWindow0.work.user.waveset" method "::WaveSet::_delayedStartDND" body line 35)
+    invoked from within
+"::.waveWindow0.work.user.waveset _delayedStartDND .waveWindow0.work.user.waveset.signallist 27 27 304 1"
+    (in namespace inscope "::WaveSet" script line 1)
+    invoked from within
+"namespace inscope ::WaveSet {::.waveWindow0.work.user.waveset _delayedStartDND .waveWindow0.work.user.waveset.signallist 27 27 304 1}"
+    ("after" script)
+ 
+*** Message Type: info ***
+When: Tue Mar 22 02:51:08 PM EDT 2016
+Exit NC-Sim: user
+      Design: worklib.ALU_tb:v
+   Languages: verilog
+   Simulator: NC-Sim
+     Version: TOOL:   ncsim(64)       15.10-s011
+        User: schmid
+        Host: ice07.ee.cooper.edu
+Time Started: Tue Mar 22 02:24:34 PM EDT 2016
+  Process ID: 26473
+   Directory: /afs/ee.cooper.edu/user/s/c/schmid/DVLSIReceiver
+     Command: irun -gui -access rwc Testbench/ALU_tb.v -s
+
+ 
+*** Message Type: info ***
+When: Tue Mar 22 02:51:16 PM EDT 2016
+Delete browser window: "Design Browser 1"
+ 

@@ -1,0 +1,27 @@
+s1(22Mar2016:13:46:18):  irun -access rcw Testbench/ALU_tb.v 
+s2(22Mar2016:13:47:10):  irun -access rcw Testbench/ALU_tb.v 
+s3(22Mar2016:13:47:41):  irun -access rcw Testbench/ALU_tb.v 
+s4(22Mar2016:13:48:00):  irun -access rcw Testbench/ALU_tb.v 
+s5(22Mar2016:13:49:07):  irun -access rcw Testbench/ALU_tb.v 
+s6(22Mar2016:13:50:47):  irun -access rcw Testbench/ALU_tb.v 
+s7(22Mar2016:13:51:20):  irun -access rcw Testbench/ALU_tb.v 
+s8(22Mar2016:13:53:10):  irun -access rcw Testbench/ALU_tb.v 
+s9(22Mar2016:13:54:53):  irun -access rcw Testbench/ALU_tb.v 
+s10(22Mar2016:13:58:58):  irun -access rcw Testbench/ALU_tb.v 
+s11(22Mar2016:14:01:41):  irun -access rcw Testbench/ALU_tb.v 
+s12(22Mar2016:14:04:06):  irun -access rcw Testbench/ALU_tb.v 
+s13(22Mar2016:14:07:40):  irun -access rcw Testbench/ALU_tb.v 
+s14(22Mar2016:14:08:26):  irun -access rwc Testbench/ALU_tb.v 
+s15(22Mar2016:14:09:28):  irun -access rwc Testbench/ALU_tb.v 
+s16(22Mar2016:14:09:54):  irun -access rwc Testbench/ALU_tb.v 
+s17(22Mar2016:14:10:21):  irun -access rwc Testbench/ALU_tb.v 
+s18(22Mar2016:14:12:35):  irun -access rwc Testbench/ALU_tb.v 
+s19(22Mar2016:14:14:09):  irun -access rwc Testbench/ALU_tb.v 
+s20(22Mar2016:14:14:55):  irun -access rwc Testbench/ALU_tb.v 
+s21(22Mar2016:14:16:11):  irun -access rwc Testbench/ALU_tb.v 
+s22(22Mar2016:14:21:28):  irun -access rwc Testbench/ALU_tb.v 
+s23(22Mar2016:14:22:46):  irun -access rwc Testbench/ALU_tb.v 
+s24(22Mar2016:14:22:58):  irun -gui -access rwc Testbench/ALU_tb.v 
+s25(22Mar2016:14:24:34):  irun -gui -access rwc Testbench/ALU_tb.v -s  
+s26(22Mar2016:14:52:41):  irun -gui -access rwc Testbench/ALU_tb.v 
+s27(22Mar2016:14:53:03):  irun -access rwc Testbench/ALU_tb.v 
