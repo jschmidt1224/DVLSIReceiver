@@ -1,3 +1,9 @@
+/* MODULE : DSPMemoryLogic
+ * FILE   : DSPMemoryLogic.v
+ * DATE   : 3-21-2016
+ *
+ */
+
 `include "definitions.v"
 
 module DSPMemoryLogic (
