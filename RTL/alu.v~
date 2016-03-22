@@ -62,7 +62,7 @@ module ALU (opcode, A, B, shift, Y);
             `ALU_IADD_I:	tmp = A + B;
             `ALU_SUB:		tmp = B - (A << shift);
             `ALU_SUB_I: 	tmp = B - A;
-            `ALU_ISUB: 		tmp = B - (A << shift);
+             ALU_ISUB: 		tmp = B - (A << shift);
             `ALU_ISUB_I: 	tmp = B - A;
             `ALU_MUL: 		tmp = (A << 12) * (B << 12);
             `ALU_MUL_I: 	tmp = (A * B);
