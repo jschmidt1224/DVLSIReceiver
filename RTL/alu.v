@@ -1,41 +1,11 @@
+
 `timescale 1 ns / 1 ns
 `include "definitions.v"
 module ALU (opcode, A, B, shift, Y);
     parameter N = 16; // Bits in operand
     parameter E = 17; // Extra bit
-    parameter C = 6;  // Bits in opcode
+    parameter C = 8;  // Bits in opcode
     parameter S = 5;  // Bits in shift
-
-/*	
-	parameter ALU_NOP = 0;
-    parameter ALU_ADD = 1;
-    parameter ALU_ADD_I = 2;
-    parameter ALU_IADD = 3;
-    parameter ALU_IADD_I = 4;
-    parameter ALU_SUB = 5;
-    parameter ALU_SUB_I = 6;
-    parameter ALU_ISUB = 7;
-    parameter ALU_ISUB_I = 8;
-    parameter ALU_MUL = 9;
-    parameter ALU_MUL_I = 10;
-    parameter ALU_IMUL = 11;
-    parameter ALU_IMUL_I = 12;
-    parameter ALU_MAC = 13;
-    parameter ALU_SQR = 14;
-    parameter ALU_AND = 15;
-    parameter ALU_AND_I = 16;
-    parameter ALU_OR = 17;
-    parameter ALU_OR_I = 18;
-    parameter ALU_XOR = 19;
-    parameter ALU_XOR_I = 20;
-    parameter ALU_SHLA = 21;
-    parameter ALU_SHRA = 22;
-    parameter ALU_SHLL = 23;
-    parameter ALU_SHRL = 24;
-    parameter ALU_ROL = 25;
-    parameter ALU_ROR = 26;
-*/
-
 
     reg     [E-1:0] tmp; // For overflow/underflow calculations
 
