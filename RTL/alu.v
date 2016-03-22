@@ -1,3 +1,4 @@
+
 `timescale 1 ns / 1 ns
 
 module ALU (opcode, A, B, shift, Y);
