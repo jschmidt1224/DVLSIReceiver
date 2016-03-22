@@ -43,7 +43,7 @@ module ALU (opcode, A, B, shift, Y);
     wire    [C-1:0] opcode;
 
     input   [N-1:0] A, B;
-    wire    [N-1:0] A, B;
+    wire    signed [N-1:0] A, B;
 
     input   [S-1:0] shift;
     wire    [S-1:0] shift;
@@ -56,12 +56,12 @@ module ALU (opcode, A, B, shift, Y);
         tmp = 17'bxxxxxxxxxxxxxxxx;
 	tmp_rotate = 64'hxxxx;
         case (opcode)
-            `ALU_NOP:		Y = 16'b0000000000000000;
-            `ALU_ADD:	 	tmp = (A << shift) + B;
+            `ALU_NOP:			Y = 16'b0000000000000000;
+            `ALU_ADD:	 		tmp = (A << shift) + B;
             `ALU_ADD_I:		tmp = A + B;
             `ALU_IADD: 		tmp = (A << shift) + B;
             `ALU_IADD_I:	tmp = A + B;
-            `ALU_SUB:		tmp = B - (A << shift);
+            `ALU_SUB:			tmp = B - (A << shift);
             `ALU_SUB_I: 	tmp = B - A;
             `ALU_ISUB: 		tmp = B - (A << shift);
             `ALU_ISUB_I: 	tmp = B - A;
@@ -71,7 +71,7 @@ module ALU (opcode, A, B, shift, Y);
             `ALU_IMUL_I: 	tmp = (A * B);
             `ALU_AND: 		Y = (A & B);
             `ALU_AND_I: 	Y = (A & B);
-            `ALU_OR: 		Y = (A | B);
+            `ALU_OR: 			Y = (A | B);
             `ALU_OR_I: 		Y = (A | B);
             `ALU_XOR: 		Y = (A ^ B);
             `ALU_XOR_I: 	Y = (A ^ B);
