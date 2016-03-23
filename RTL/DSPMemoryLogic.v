@@ -11,7 +11,6 @@ module DSPMemoryLogic (
 	read_addr,		// INPUT address to be read from
 	write_addr,		// INPUT address to write data to 
 	write_en,		// OUTPUT write enable active HIGH af
-	r_w,			// INPUT read or write mode - 0 is read, 1 is write
 	alu_result,		// INPUT the content to write	
 	mem_mode,		// INPUT < insert relevant comment here >	
 	read_addr_1, 		// OUTPUT address bits for read address for memory bank 1 
@@ -24,7 +23,7 @@ module DSPMemoryLogic (
 	write_back		// OUTPUT < someone tell me what this does > 
 );
 
-	input read_addr, write_addr, r_w, alu_result, mem_mode, read_data_1, read_data_2;
+	input read_addr, write_addr, alu_result, mem_mode, read_data_1, read_data_2;
 	
 	output write_data, write_en, read_addr_1, read_addr_2, write_addr_2, write_back;
 
@@ -38,7 +37,6 @@ module DSPMemoryLogic (
 	wire [3-1:0] mem_mode;
 	
 	reg write_en;
-	wire r_w;
 
 	
 	always @(*) begin
@@ -54,14 +52,6 @@ module DSPMemoryLogic (
 				// do nothing
 				write_back = alu_result;
 				write_en = `FALSE;
-			end
-			`MEM_PUSH: begin
-				write_back = alu_result;
-				write_en = `FALSE;			
-			end
-			`MEM_POP: begin
-				write_back = alu_result;
-				write_en = `FALSE; 
 			end
 			`MEM_LD: begin
 				write_back = read_addr[`REG_ADDR_LEN-1] ? read_data_2 :read_addr_1;

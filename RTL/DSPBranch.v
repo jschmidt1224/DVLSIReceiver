@@ -1,21 +1,31 @@
 `include "definitions.v"
 
-module DSPBranch(
-	clk,
-	rst,
+/*
+This block is in control of branch logic
+It must determine if any branch is needed based on the
+opcode and conditions evaluated by the ALU
 
+It should connect
+	ALU_result to the ALU
+	flow_mode to the decode block
+	address to the decode block
+	jump_addr to fetch
+	jump_flag to fetch
+*/
+	
+
+module DSPBranch(
 	ALU_result,
-	alu_mode,
 	flow_mode,
 	address,
 	jump_addr,
 	jump_flag);
 
-	input clk, rst, ALU_result, alu_mode, r_w, mem_mode, flow_mode, reg_s1, reg_s2;
+	input ALU_result, r_w, mem_mode, flow_mode, reg_s1, reg_s2;
 	input reg_dest, address;
 	output jump_addr, jump_flag;
 
-	wire clk, rst, jump_flag;
+	wire jump_flag;
 	wire [15:0] ALU_result;
 
 
