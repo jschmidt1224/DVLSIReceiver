@@ -61,7 +61,7 @@
 `define FALSE 1'b0
 `define TRUE  1'b1
 
-/	typedef reg struct packed{
+//	typedef reg struct packed{
 //		ALU				alu				// alu mode
 //		BOOLEAN 	r_w				// ???
 //		FLOW			flow				// flow control

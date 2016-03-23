@@ -1,13 +1,13 @@
 
 `timescale 1 ns / 1 ns
-`include "definitions.v"
-module ALU (opcode, A, B, shift, Y);
+`include "/afs/ee.cooper.edu/user/k/u/kurutu/Digital_VLSI/DVLSIReceiver/RTL/definitions.v"
+module ALU (opcode, A, B, shift, out);
     parameter N = 16; // Bits in operand
     parameter E = 17; // Extra bit
     parameter C = 8;  // Bits in opcode
     parameter S = 5;  // Bits in shift
 
-    reg     [E-1:0] tmp; // For overflow/underflow calculations
+    reg 		signed [N*2-1:0] tmp; // For overflow/underflow calculations
 
     input   [C-1:0] opcode;
     wire    [C-1:0] opcode;
@@ -18,15 +18,19 @@ module ALU (opcode, A, B, shift, Y);
     input   [S-1:0] shift;
     wire    [S-1:0] shift;
 
-    output  [N-1:0] Y;
-    reg     [N-1:0] Y;
+    output  signed [N-1:0] out;
+		wire    signed [N-1:0] out;
+    reg     signed [N-1:0] Y;
 
     reg     [(N*2)-1:0] tmp_rotate;    //temp variable for rotating operations
-    always @(*) begin
-        tmp = 17'bxxxxxxxxxxxxxxxx;
-	tmp_rotate = 64'hxxxx;
+		
+		assign out = Y;    
+		always @(*) begin
+        tmp = 32'hxxxxxxxx;
+				tmp_rotate = 64'hxxxx;
+				Y = 16'bxxxxxxxxxxxxxxxx;
         case (opcode)
-            `ALU_NOP:			Y = 16'b0000000000000000;
+            `ALU_NOP:			tmp = 32'b0000000000000000;
             `ALU_ADD:	 		tmp = (A << shift) + B;
             `ALU_ADD_I:		tmp = A + B;
             `ALU_IADD: 		tmp = (A << shift) + B;
@@ -35,41 +39,41 @@ module ALU (opcode, A, B, shift, Y);
             `ALU_SUB_I: 	tmp = B - A;
             `ALU_ISUB: 		tmp = B - (A << shift);
             `ALU_ISUB_I: 	tmp = B - A;
-            `ALU_MUL: 		tmp = (A << 12) * (B << 12);
-            `ALU_MUL_I: 	tmp = (A * B);
-            `ALU_IMUL: 		tmp = ((A << 12) * (B << 12));
-            `ALU_IMUL_I: 	tmp = (A * B);
-            `ALU_AND: 		Y = (A & B);
-            `ALU_AND_I: 	Y = (A & B);
-            `ALU_OR: 			Y = (A | B);
-            `ALU_OR_I: 		Y = (A | B);
-            `ALU_XOR: 		Y = (A ^ B);
-            `ALU_XOR_I: 	Y = (A ^ B);
-            `ALU_SHLA: 		Y = A <<< shift;
-            `ALU_SHRA: 		Y = A >>> shift;
-            `ALU_SHRL: 		Y = B >> shift;
-            `ALU_SHRL: 		Y = B >> shift;
-            `ALU_ROL: begin
- 		tmp_rotate = {A,A} >> shift;
-		Y = tmp_rotate [31:0];
-	    end
-            `ALU_ROR: begin
-		tmp_rotate = {A,A} << shift;
-		Y = tmp_rotate [31:0];
-	    end
-            //`ALU_ROL: 		Y = {A[N-1-5:0], A[N-1:N-5]};
-            //`ALU_ROR: 		Y = {A[5-1:0], A[N-1:5]};
-            default: 		Y = 16'bxxxxxxxxxxxxxxxx;
+            `ALU_MUL: 		tmp = A * B;
+            `ALU_MUL_I: 	tmp = A * B;
+            `ALU_IMUL: 		tmp = A * B;
+            `ALU_IMUL_I: 	tmp = A * B;
+            `ALU_AND: 		tmp = (A & B);
+            `ALU_AND_I: 	tmp = (A & B);
+            `ALU_OR: 			tmp = (A | B);
+            `ALU_OR_I: 		tmp = (A | B);
+            `ALU_XOR: 		tmp = (A ^ B);
+            `ALU_XOR_I: 	tmp = (A ^ B);
+            `ALU_SHLA: 		tmp = A <<< shift;
+            `ALU_SHRA: 		tmp = A >>> shift;
+            `ALU_SHRL: 		tmp = B >> shift;
+            `ALU_SHRL: 		tmp = B >> shift;
+            `ALU_ROL:begin
+							tmp = {A,A} >> shift;
+							Y = tmp[15:0];
+						end
+            `ALU_ROR:begin
+							tmp = {A,A} << shift;
+							Y = tmp[31:16];
+						end
+            default: 		tmp = 32'd0;
         endcase
-
-        if (tmp != 17'bxxxxxxxxxxxxxxxxx) begin
-            if (tmp > 16'b0111111111111111)
-                Y = 16'b0111111111111111;
-            else if (tmp < 16'b1111111111111111)
-                Y = 16'b1111111111111111;
-            else
-                Y = tmp;
-        end
+			if(opcode == `ALU_IADD || opcode == `ALU_IADD_I || opcode == `ALU_ISUB || opcode == `ALU_ISUB_I || opcode == `ALU_IMUL || opcode == `ALU_IMUL_I) begin
+				if(tmp > 32767)
+						Y = 32767;
+				else if (tmp < -32768)
+						Y = -32768;
+				else Y = {tmp[31],tmp[14:0]};
+			end
+			else if (opcode == `ALU_ADD || opcode == `ALU_MUL || opcode == `ALU_MUL_I || opcode == `ALU_MUL)  begin
+						Y = tmp[31:16];
+			end
+			
     end
 
 endmodule //ALU
