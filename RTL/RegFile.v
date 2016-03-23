@@ -1,4 +1,4 @@
- module RegFile(
+module RegFile(
 		read_addr_1, 
 		read_addr_2,
 		read_addr_3,		
@@ -9,26 +9,30 @@
 		write_data, 
 		write_en); //active HIGH af
 
-input wire [4:0] read_addr_1;
-input wire [4:0] read_addr_2;
-input wire [4:0] read_addr_3;
-input wire [4:0] write_addr;
+parameter DATA_WIDTH = 16 ;
+parameter ADDR_WIDTH = 5 ;
+parameter REG_DEPTH = 1 << ADDR_WIDTH;		//bitshifts represent powers of 2
 
-output reg [15:0] read_data_1;
-output reg [15:0] read_data_2;
-output reg [15:0] read_data_3;
+input wire [ADDR_WIDTH-1:0] read_addr_1;
+input wire [ADDR_WIDTH-1:0] read_addr_2;
+input wire [ADDR_WIDTH-1:0] read_addr_3;
+input wire [ADDR_WIDTH-1:0] write_addr;
 
-input wire [15:0] write_data;
+output reg [DATA_WIDTH-1:0] read_data_1;
+output reg [DATA_WIDTH-1:0] read_data_2;
+output reg [DATA_WIDTH-1:0] read_data_3;
+
+input wire [DATA_WIDTH-1:0] write_data;
 input write_en;
 
-reg [15:0] mem [0:31];
+reg [DATA_WIDTH-1:0] mem [0:REG_DEPTH-1];
 
-always @(write_addr or write_data or write_en)
+always @(*)
 begin
 	if (write_en)
 		mem[write_addr] = write_data;
-	end
 end
+
 
 always @(read_addr_1)
 	read_data_1 = mem[read_addr_1];
@@ -38,10 +42,5 @@ always @(read_addr_2)
 
 always @(read_addr_3)
 	read_data_3 = mem[read_addr_3];
-
-
-
-
-
 
 endmodule
