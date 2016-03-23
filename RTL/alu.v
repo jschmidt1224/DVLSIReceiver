@@ -1,19 +1,19 @@
 
 `timescale 1 ns / 1 ns
 `include "/afs/ee.cooper.edu/user/k/u/kurutu/Digital_VLSI/DVLSIReceiver/RTL/definitions.v"
-module ALU (opcode, A, B, shift, out);
+module ALU (opcode, A, B, C, shift, out);
     parameter N = 16; // Bits in operand
     parameter E = 17; // Extra bit
-    parameter C = 8;  // Bits in opcode
+    parameter O = 8;  // Bits in opcode
     parameter S = 5;  // Bits in shift
 
     reg 		signed [N*2-1:0] tmp; // For overflow/underflow calculations
 
-    input   [C-1:0] opcode;
-    wire    [C-1:0] opcode;
+    input   [O-1:0] opcode;
+    wire    [O-1:0] opcode;
 
-    input   [N-1:0] A, B;
-    wire    signed [N-1:0] A, B;
+    input   [N-1:0] A, B, C;
+    wire    signed [N-1:0] A, B, C;
 
     input   [S-1:0] shift;
     wire    [S-1:0] shift;
@@ -53,6 +53,7 @@ module ALU (opcode, A, B, shift, out);
             `ALU_SHRA: 		tmp = A >>> shift;
             `ALU_SHRL: 		tmp = B >> shift;
             `ALU_SHRL: 		tmp = B >> shift;
+            `ALU_MAC:       tmp = (A * B) + C;
             `ALU_ROL:begin
 							tmp = {A,A} >> shift;
 							Y = tmp[15:0];
@@ -63,7 +64,7 @@ module ALU (opcode, A, B, shift, out);
 						end
             default: 		tmp = 32'd0;
         endcase
-			if(opcode == `ALU_IADD || opcode == `ALU_IADD_I || opcode == `ALU_ISUB || opcode == `ALU_ISUB_I || opcode == `ALU_IMUL || opcode == `ALU_IMUL_I) begin
+			if(opcode == `ALU_IADD || opcode == `ALU_IADD_I || opcode == `ALU_ISUB || opcode == `ALU_ISUB_I || opcode == `ALU_IMUL || opcode == `ALU_IMUL_I || opcode == `ALU_MAC) begin
 				if(tmp > 32767)
 						Y = 32767;
 				else if (tmp < -32768)
