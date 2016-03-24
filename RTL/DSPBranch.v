@@ -17,12 +17,14 @@ It should connect
 module DSPBranch(
 	ALU_result,
 	flow_mode,
+	ALU_result,
 	address,
 	jump_addr,
 	jump_flag);
 
-	input ALU_result, r_w, mem_mode, flow_mode, reg_s1, reg_s2;
-	input reg_dest, address;
+	input clk, rst, ALU_result, flow_mode;
+	input address;
+
 	output jump_addr, jump_flag;
 
 	wire jump_flag;
