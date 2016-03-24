@@ -37,7 +37,6 @@ always @(write_addr or write_data or write_en)
 begin
 	if (write_en)
 		mem[write_addr] = write_data;
-	end
 end
 
 always @(read_addr_1)

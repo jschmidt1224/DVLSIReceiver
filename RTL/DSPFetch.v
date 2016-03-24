@@ -11,7 +11,7 @@ This block should connect
 */
 
 
-module DSPFetch (
+module DSPFetch (		//Gretchen, stop trying to make fetch happen. It's not going to happen!
 	clk,
 	rst,
 	read_addr,
