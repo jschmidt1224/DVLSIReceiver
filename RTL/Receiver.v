@@ -19,18 +19,18 @@ module Receiver(clk, in, out)
 
 
 	sram dMem1(
-		.addr_r		(read_addr_1	),
-		.addr_w		(write_addr_1	),
-		.data_r		(read_data_1	),
-		.data_w		(write_data_1	),
-		.we				(write_en_1		));
+		.read_addr		(read_addr_1	),
+		.write_addr		(write_addr_1	),
+		.read_data		(read_data_1	),
+		.write_data		(write_data_1	),
+		.write_en		(write_en_1	)	);
 
 	sram dMem2(
-		.addr_r		(read_addr_2	),
-		.addr_w		(write_addr_2	),
-		.data_r		(read_data_2	),
-		.data_w		(write_data_2	),
-		.we				(write_en_2		));
+		.read_addr		(read_addr_2	),
+		.write_addr		(write_addr_2	),
+		.read_data		(read_data_2	),
+		.write_data		(write_data_2	),
+		.write_en		(write_en_2	)	);
 
 	InstrMem iMem(
 		.read_addr		(read_addr_i),
