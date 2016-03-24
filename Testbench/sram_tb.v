@@ -4,30 +4,60 @@
 module sram_tb ();
 	
 	parameter DATA_WIDTH = 16 ;
-	parameter ADDR_WIDTH = 8 ;
+	parameter ADDR_WIDTH = 15 ;
 	parameter RAM_DEPTH = 1 << ADDR_WIDTH;	
 	
-	reg [ADDR_WIDTH-1:0] addr_w, addr_r;
-	reg[DATA_WIDTH-1:0] data_w;
-	reg we;
-	wire [DATA_WIDTH-1:0] data_r;
+	reg [ADDR_WIDTH-1:0] write_addr, read_addr;
+	reg[DATA_WIDTH-1:0] write_data;
+	reg write_en;
+	wire [DATA_WIDTH-1:0] read_data;
 
-	sram Myram ( .addr_w(addr_w), .addr_r(addr_r), .data_w(data_w), .data_r(data_r), .we(we) );
+	sram Testsram ( .write_addr(write_addr), .read_addr(read_addr), .write_data(write_data), .read_data(read_data), .write_en(write_en) );
 
-	integer i, j;
+	integer i;
 	initial begin 
-		$display("Start sram testbench \n");
+		$display("START SRAM TESTBENCH \n");
 
-	//Testing Writing
-		we = 1;	
-		for(i=0; i <= 255; i = i+1) begin
-			#2 data_w = i;
-				 addr_w = i;
-			#2 addr_r = addr_w;
+	//Testing Writing and Reading
+		write_en = 1;	
+		for(i=0; i <= 255; i = i+1) begin					//Just write stuff to a bunch of cells
+			#2 write_data = i;
+				 write_addr = i;
+			#2 read_addr = write_addr;
 			#2;
-		if(data_r  == data_w)
-			$display("Good Job %d %d %d \n", addr_w, data_w, data_r);
-		else $display("Test failed, Didn't write %d %d %d \n", addr_w, data_w, data_r);
+		if(read_data  == write_data)
+			$display("Good Job %d %d %d \n", write_addr, write_data, read_data);
+		else $display("Test failed %d %d %d \n", write_addr, write_data, read_data);
 		end
+		
+		#2 write_en = 0;													//See if we can stop writing
+		
+		#2 write_addr = 5;
+			 read_addr = 5;
+		#2 $display("%d",read_data);		
+		
+		#2 write_addr = 10;
+			 read_addr = 10;
+		#2 $display("%d",read_data);
+		
+		#2 write_addr = 123;
+			 read_addr = 123;	
+		#2 $display("%d",read_data);	
+		
+		#2 write_addr = 36;
+			 read_addr = 36;
+		#2 $display("%d",read_data);		
+	
+		#2 write_en = 1;	
+		for(i=255; i >= 0; i = i-1) begin		//Just write stuff to a bunch of cells again
+			#2 write_data = i;
+				 write_addr = i;
+			#2 read_addr = write_addr;
+			#2;
+		if(read_data  == write_data)
+			$display("Good Job %d %d %d \n", write_addr, write_data, read_data);
+		else $display("Test failed %d %d %d \n", write_addr, write_data, read_data);
+		end
+
 	end
 endmodule
