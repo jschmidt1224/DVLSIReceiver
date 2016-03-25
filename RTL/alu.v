@@ -62,6 +62,19 @@ module ALU (opcode, A, B, C, shift, out);
 							tmp = {A,A} << shift;
 							Y = tmp[31:16];
 						end
+            `ALU_BEZ:begin
+							if(A == 0)
+                                tmp = B;
+                            else
+                                tmp = 32'hxxxxxxxx;
+						end
+            `ALU_BNEZ:begin
+							if(A != 0)
+                                tmp = B;
+                            else
+                                tmp = 32'hxxxxxxxx;
+						end
+
             default: 		tmp = 32'd0;
         endcase
 			if(opcode == `ALU_IADD || opcode == `ALU_IADD_I || opcode == `ALU_ISUB || opcode == `ALU_ISUB_I || opcode == `ALU_IMUL || opcode == `ALU_IMUL_I || opcode == `ALU_MAC) begin
