@@ -7,7 +7,6 @@ the corresponding register
 when WE is high, the contents of write_data will be written 
 to the corresponding register
 */
- 
 
 module RegFile(
 		read_addr_1, 
