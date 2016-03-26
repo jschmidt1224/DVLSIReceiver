@@ -1,3 +1,13 @@
+
+/*
+This block is in charge of keeping the registers states
+When the addr inputs change the outputs will be the value of
+the corresponding register
+
+when WE is high, the contents of write_data will be written 
+to the corresponding register
+*/
+
 module RegFile(
 		read_addr_1, 
 		read_addr_2,
