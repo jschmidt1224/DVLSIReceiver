@@ -4,6 +4,7 @@
 //`ifndef DEFINITIONS
 //`define DEFINITIONS
 
+`timescale 1 ns / 1 ns
 
 `define ALU_NOP     8'd0
 `define ALU_ADD     8'd1
@@ -69,10 +70,15 @@
 
 
 
-`define INST_WORD_LEN  32
-`define REG_WORD_LEN   16
-`define REG_ADDR_LEN   16
-`define MEM_ADDR_LEN   16
+`define INST_WORD_LEN  	32
+`define REG_WORD_LEN   	16
+`define REG_ADDR_LEN   	5
+`define MEM_ADDR_LEN   	16
+`define SRAM_ADDR_LEN		15
+`define ALU_MODE_LEN	 	8
+`define FLOW_MODE_LEN	 	3
+`define MEM_MODE_LEN	 	3
+`define SHIFT_LEN			 	5
 //`endif
 //	typedef reg struct packed{
 //		OPERAND			op

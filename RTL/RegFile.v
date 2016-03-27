@@ -8,6 +8,8 @@ when WE is high, the contents of write_data will be written
 to the corresponding register
 */
 
+`include "definitions.v"
+
 module RegFile(
 		read_addr_1, 
 		read_addr_2,

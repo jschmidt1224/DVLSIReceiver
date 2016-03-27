@@ -1,6 +1,5 @@
 
-`timescale 1 ns / 1 ns
-`include "/afs/ee.cooper.edu/user/k/u/kurutu/Digital_VLSI/DVLSIReceiver/RTL/definitions.v"
+`include "definitions.v"
 module ALU (opcode, A, B, C, shift, out);
     parameter N = 16; // Bits in operand
     parameter E = 17; // Extra bit

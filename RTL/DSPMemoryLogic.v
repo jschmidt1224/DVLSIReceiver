@@ -31,7 +31,7 @@ module DSPMemoryLogic (
 	
 	output write_data, write_en, read_addr_1, read_addr_2, write_addr_2, write_back, regFile_write_en;
 
-	wire  [`MEM_ADDR_LEN-1:0] read_addr_1, read_addr_2, write_addr_2;
+	wire  [`SRAM_ADDR_LEN-1:0] read_addr_1, read_addr_2, write_addr_2;
 	
 	wire [`REG_WORD_LEN-1:0] read_data_1, read_data_2;
 	reg  [`REG_WORD_LEN-1:0] write_data, write_back;
@@ -46,9 +46,9 @@ module DSPMemoryLogic (
 	reg write_en;
 	reg regFile_write_en;
 
-	assign read_addr_1 = data_s1;
-	assign read_addr_2 = data_s1;
-	assign write_addr_2 = data_s1;
+	assign read_addr_1 = data_s1[`SRAM_ADDR_LEN-1:0];
+	assign read_addr_2 = data_s1[`SRAM_ADDR_LEN-1:0];
+	assign write_addr_2 = data_s1[`SRAM_ADDR_LEN-1:0];
 	
 	always @(*) begin
 		write_data    = 16'hxxxx;

@@ -21,19 +21,18 @@ module DSPBranch(
 	jump_addr,
 	jump_flag);
 
-	input clk, rst, ALU_result, flow_mode;
-	input address;
+	input		wire	[`REG_WORD_LEN-1:0]		ALU_result;
+	input 	wire  [`FLOW_MODE_LEN-1:0]	flow_mode;
+	input 	wire	[`MEM_ADDR_LEN-1:0]		address;
+	
+	output	wire	[`MEM_ADDR_LEN-1:0]		jump_addr;
+	output	wire												jump_flag;
 
-	output jump_addr, jump_flag;
+					reg 	[`MEM_ADDR_LEN-1:0] 	internal_addr;
+					reg 												internal_flag;
 
-	wire jump_flag;
-	wire [15:0] ALU_result;
-
-
-	reg [15:0] internal_addr;
-	reg internal_flag;
-
-	wire [15:0] jump_addr;
+	assign jump_flag = internal_flag;
+	assign jump_addr = internal_addr;
 
 	always @(*)
 	begin
@@ -70,6 +69,5 @@ module DSPBranch(
 			end
 		endcase
 	end
-
 
 endmodule
