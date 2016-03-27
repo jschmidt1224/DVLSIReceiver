@@ -12,12 +12,11 @@ It should connect
 	jump_addr to fetch
 	jump_flag to fetch
 */
-	
+
 
 module DSPBranch(
 	ALU_result,
 	flow_mode,
-	ALU_result,
 	address,
 	jump_addr,
 	jump_flag);
