@@ -77,7 +77,7 @@ module DSPMemoryLogic (
 				regFile_write_en = 1'b0;
 			end
 			`MEM_LD_IMM: begin
-				write_back = data_s2;
+				write_back = data_s1;
 				regFile_write_en = ~clk;
 				write_en = 1'b0;
 			end

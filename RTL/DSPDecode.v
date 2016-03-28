@@ -475,7 +475,7 @@ always @(*) begin
 		default: begin
 			//d.op ={ALU_NOP, FALSE, MEM_NONE, FLOW_NONE};					//NOP		
 				$display("DECODE -- ERROR: opcode %b not defined", opcode);
-				$finish();
+				//$finish();
 		end
 	endcase
 	

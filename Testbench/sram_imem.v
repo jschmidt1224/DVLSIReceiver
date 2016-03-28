@@ -1,9 +1,9 @@
 //-----------------------------------------------------
-// Design Name : sram
-// File Name   : sram.v
+// Design Name : sram_imem
+// File Name   : sram_imem.v
 // Function    : Asynchronous Read Write SRAM 
 //-----------------------------------------------------
-module sram (
+module sram_imem (
 
 write_addr 		, // Address Write Input
 read_addr		, // Address Read Input
@@ -12,8 +12,8 @@ read_data		, // Data Read Output
 write_en          // Write Enable/Disable
 
 );          
-parameter DATA_WIDTH = 16 ;
-parameter ADDR_WIDTH = 15 ;
+parameter DATA_WIDTH = 32 ;
+parameter ADDR_WIDTH = 16 ;
 parameter RAM_DEPTH = 1 << ADDR_WIDTH;
 
 //--------------Input Ports----------------------- 

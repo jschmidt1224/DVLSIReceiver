@@ -37,8 +37,8 @@ module DSPBranch(
 	always @(*)
 	begin
 		case(flow_mode)
-			`FLOW_NONE: internal_flag = 1'b0;
-			`FLOW_BEZ:
+			`FLOW_NONE: internal_flag = 1'b0;			
+      `FLOW_JMP:
 			begin
 				internal_flag = 1'b1;
 				internal_addr = address;

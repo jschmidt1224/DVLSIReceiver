@@ -96,15 +96,15 @@ module DSP (
 
 
 	RegFile regFile(
-		.read_addr_1			(DECODE_reg_addr1			),
-		.read_addr_2			(DECODE_reg_addr2			),
-		.read_addr_3			(DECODE_reg_addr3			),
-		.write_addr				(DECODE_reg_dest			),
-		.read_data_1			(REGFILE_read_data_1	),
-		.read_data_2			(REGFILE_read_data_2	),
-		.read_data_3			(REGFILE_read_data_3	),
-		.write_data				(MEMLOG_write_back	  ),
-		.write_en					(		));
+		.read_addr_1			(DECODE_reg_addr1			    ),
+		.read_addr_2			(DECODE_reg_addr2			    ),
+		.read_addr_3			(DECODE_reg_addr3			    ),
+		.write_addr				(DECODE_reg_dest			    ),
+		.read_data_1			(REGFILE_read_data_1	    ),
+		.read_data_2			(REGFILE_read_data_2	    ),
+		.read_data_3			(REGFILE_read_data_3	    ),
+		.write_data				(MEMLOG_write_back	      ),
+		.write_en					(MEMLOG_regFile_write_en  ));
 
 	ALU alu(
 		.opcode						(DECODE_alu_mode	),
