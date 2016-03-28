@@ -7,11 +7,116 @@ module ALU (opcode, A, B, C, shift, out);
   input   wire          [`REG_WORD_LEN-1:0]   A;
   input   wire          [`REG_WORD_LEN-1:0]   B;
   input   wire          [`REG_WORD_LEN-1:0]   C;
-    
-    
+  output  wire          [`REG_WORD_LEN-1:0]   out;
+
+          reg           [`REG_WORD_LEN-1:0]   Y;
+
+          wire          [`REG_WORD_LEN-1:0]   IALU_out;
+          reg           [`REG_WORD_LEN-1:0]   A_shift;          // A << shift
+          reg           [`REG_WORD_LEN-1:0]   A_chained;        // if not ALU_MAC, A_chained = A_shift; if ALU_MAC, A_chained = QMULT_out)
+          wire          [`REG_WORD_LEN-1:0]   QADD_out;
+          wire          [`REG_WORD_LEN-1:0]   QMULT_out;
+          reg           [`REG_WORD_LEN-1:0]   B_signed;         // negate B for SUB and SUB_I
+          reg           [`REG_WORD_LEN*2-1:0] tmp_rotate;
+          
+  assign out = Y;
+
+  always @(A,shift) begin
+    A_shift = A << shift;
+  end
+
+  always @(B,opcode) begin
+    B_signed = (opcode == `ALU_SUB || opcode == `ALU_SUB_I ) ? -1*B : B;
+  end
+  
+  always @(QMULT_out, A_shift) begin
+    A_chained = (opcode == `ALU_MAC) ? QMULT_out : A_shift;
+  end
+
+  int_alu ialu( .opcode(opcode),
+                .A(A),
+                .B(B),
+                .C(C),
+                .shift(shift),
+                .out(IALU_out));
+
+  qmult qmult0( .i_multiplicand(A),
+                .i_multiplier(B),
+                .o_result(QMULT_out));
+  
+  qadd  qadd0 ( .a(A_chained),
+                .b(B_signed),
+                .out(QADD_out));
+  
+  
+
+  always @(*) begin
+    case(opcode)
+      `ALU_NOP:     Y = 16'hxxxx;
+      `ALU_ADD:     Y = QADD_out;
+      `ALU_ADD_I:   Y = QADD_out;
+      `ALU_SUB:     Y = QADD_out;
+      `ALU_SUB_I:   Y = QADD_out;
+      `ALU_MAC:     Y = QADD_out;
+      `ALU_MUL:     Y = QMULT_out;
+      `ALU_MUL_I:   Y = QMULT_out;
+      `ALU_IADD:    Y = IALU_out;
+      `ALU_IADD_I:  Y = IALU_out;
+      `ALU_ISUB:    Y = IALU_out;
+      `ALU_ISUB_I:  Y = IALU_out;
+      `ALU_IMUL_I:  Y = IALU_out;
+      `ALU_SHRA:    Y = IALU_out;
+      `ALU_SHLA:    Y = IALU_out;
+      `ALU_BEZ:     Y = IALU_out;
+      `ALU_BNEZ:    Y = IALU_out;
+      `ALU_BEQ:     Y = IALU_out;
+      `ALU_OR:      Y = A | B;
+      `ALU_OR_I:    Y = A | B;
+      `ALU_AND:     Y = A & B;
+      `ALU_AND_I:   Y = A & B;
+      `ALU_XOR:     Y = A ^ B;
+      `ALU_XOR_I:   Y = A ^ B;
+      `ALU_SHRL:    Y = A >> shift;
+      `ALU_SHLL:    Y = A << shift;
+      `ALU_ROL:     begin     tmp_rotate = ({A,A} << shift);  Y = tmp_rotate[`REG_WORD_LEN*2-1:`REG_WORD_LEN-1]; end
+      `ALU_ROR:     begin     tmp_rotate = ({A,A} >> shift);  Y = tmp_rotate[`REG_WORD_LEN-1:0];                 end
+      default:      $display("ALU: ERROR - unknown opcode");
+    endcase
+  end
 endmodule
 
+module int_alu(opcode, A,B,C, shift, out);
+  input   wire          [`ALU_MODE_LEN-1:0]    opcode;
+  input   wire  signed  [`REG_WORD_LEN-1:0]    A;
+  input   wire  signed  [`REG_WORD_LEN-1:0]    B;
+  input   wire  signed  [`REG_WORD_LEN-1:0]    C;
+  output  wire  signed  [`REG_WORD_LEN-1:0]    out;
+  input   wire          [`SHIFT_LEN-1:0]       shift;
+          reg   signed  [`REG_WORD_LEN*2-1:0]  tmp;
+          reg   signed  [`REG_WORD_LEN-1:0]    Y;
+          reg           [`REG_WORD_LEN-1:0]    tmp2;
 
+  assign out = Y;
+
+  always @(A,B,C,shift) begin
+    case(opcode)
+            `ALU_IADD: 		tmp = (A << shift) + B;
+            `ALU_IADD_I:	tmp = A + B;
+            `ALU_ISUB:    tmp = B - (A << shift);
+            `ALU_ISUB_I: 	tmp = B - A;
+            `ALU_IMUL: 		tmp = A * B;
+            `ALU_IMUL_I: 	tmp = A * B;
+            `ALU_SHRA:    tmp = A >>> shift;
+            `ALU_SHLA:    tmp = A <<< shift;
+            `ALU_BEZ:     tmp = ~|A;                 // |A = 1 if A != 0; 
+            `ALU_BNEZ:    tmp = |A;
+            `ALU_BEQ:     tmp = ~|(A^B);              
+    endcase
+    if(tmp > 32767)         Y = 32767;
+    else if (tmp < -32768)  Y = -32768;
+    else                    Y = tmp[15:0];
+  end
+endmodule
 
 module qmult (i_multiplicand,i_multiplier,o_result);
    
@@ -54,7 +159,7 @@ module qmult (i_multiplicand,i_multiplier,o_result);
  
 endmodule
 
-module qadd(a,b,c,out);
+module qadd(a,b,out);
  
   parameter N = `REG_WORD_LEN;
   parameter Q = `REG_WORD_LEN-1;
@@ -64,7 +169,7 @@ module qadd(a,b,c,out);
   input   wire  [`REG_WORD_LEN-1:0] out;
           reg   [N-1:0]             res;
    
-  assign c = res;
+  assign out = res;
   
   always @(a,b) begin
 	  // both negative or both positive
