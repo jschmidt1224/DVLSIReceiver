@@ -8,21 +8,22 @@ module DSPDecode_TB();
 		reg [15:0] read_data_s1_from_regFile, read_data_s2_from_regFile, read_data_s3_from_regFile;									
 		
 		//Outputs
-		reg [7:0] alu_mode;
-		reg [2:0]  mem_mode, flow_mode;
-		reg [4:0]  reg_addr1, reg_addr2, reg_addr3;
-		reg [4:0]  shamt, reg_dest;			
-		reg [15:0] data_s1, data_s2, data_s3;
-		reg [15:0] jaddress;
-
-		DSPDecode decode(.instruction(instruction), .read_data_s1_from_regFile(read_data_s1_from_regFile), .read_data_s2_from_regFile(read_data_s2_from_regFile), .read_data_s3_from_regFile(read_data_s3_from_regFile), .alu_mode(alu_mode), .mem_mode(mem_mode), .flow_mode(flow_mode), .reg_addr1(reg_addr1), .reg_addr2(reg_addr2), .reg_addr3(reg_addr3), .shamt(shamt), .reg_dest(reg_dest), .data_s1(data_s1), .data_s2(data_s2), .data_s3(data_s3), .jaddress(jaddress));
+		wire [7:0] alu_mode;
+		wire [2:0]  mem_mode, flow_mode;
+		wire [4:0]  reg_addr1, reg_addr2, reg_addr3;
+		wire [4:0]  shamt, reg_dest;			
+		wire [15:0] data_s1, data_s2, data_s3;
+		wire [15:0] jaddress;
+		wire				write_back_en;
+	
+		DSPDecode decode(.instruction(instruction), .read_data_s1_from_regFile(read_data_s1_from_regFile), .read_data_s2_from_regFile(read_data_s2_from_regFile), .read_data_s3_from_regFile(read_data_s3_from_regFile), .alu_mode(alu_mode), .mem_mode(mem_mode), .flow_mode(flow_mode), .reg_addr1(reg_addr1), .reg_addr2(reg_addr2), .reg_addr3(reg_addr3), .shamt(shamt), .reg_dest(reg_dest), .data_s1(data_s1), .data_s2(data_s2), .data_s3(data_s3), .jaddress(jaddress), .write_back_en(write_back_en));
 
 
 		initial begin
 			$display("Start of Decode testbench");
 
 			/////////////ADD//////////////
-			instruction = 32'b00000000001000100001100000000000	//ADD item at address 1 to item at address 2, store in address 3, 0 shamt
+			instruction = 32'b00000000001000100001100000000000;	//ADD item at address 1 to item at address 2, store in address 3, 0 shamt
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -50,7 +51,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////ADD_I//////////////
-			instruction = 32'b00000100001000100000000000000100 		//ADD immediate (4)
+			instruction = 32'b00000100001000100000000000000100; 		//ADD immediate (4)
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -75,7 +76,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////SUB//////////////
-			instruction = 32'b00010000001000100001100000000000	//SUB item at address 1 from item at address 2, store in address 3, 0 shamt
+			instruction = 32'b00010000001000100001100000000000;	//SUB item at address 1 from item at address 2, store in address 3, 0 shamt
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -103,7 +104,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////SUB_I//////////////
-			instruction = 32'b00010100001000100000000000000100 		//SUB immediate (4)
+			instruction = 32'b00010100001000100000000000000100; 		//SUB immediate (4)
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -128,7 +129,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////MUL//////////////
-			instruction = 32'b00100000001000100001100000000000	//MUL item at address 1 by item at address 2, store in address 3, 0 shamt
+			instruction = 32'b00100000001000100001100000000000;	//MUL item at address 1 by item at address 2, store in address 3, 0 shamt
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -156,7 +157,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////MUL_I//////////////
-			instruction = 32'b00100100001000100000000000000100 		//ADD immediate (4)
+			instruction = 32'b00100100001000100000000000000100; 		//ADD immediate (4)
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -181,7 +182,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////SQR//////////////
-			instruction = 32'b00110000001000100001100000000000 
+			instruction = 32'b00110000001000100001100000000000; 
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -207,11 +208,11 @@ module DSPDecode_TB();
 			end
 
 			/////////////MAC//////////////
-			instruction = 32'b00110100001000100001100000000000
+			instruction = 32'b00110100001000100001100000000000;
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
-			read_data_s3_from_regfile = 4
+			read_data_s3_from_regFile = 4;
 
 			#1 $display("Testing MAC instruction");
 			#1 $display("alu_mode: ", alu_mode, "mem_mode: ", mem_mode, "flow_mode: ", flow_mode, "reg_addr1: ", reg_addr1, "reg_addr2: ", reg_addr2, "reg_addr3: ", reg_addr3, "shamt: ", shamt, "reg_dest: ", reg_dest, "data_s1: ", data_s1, "data_s2: ", data_s2, "data_s3: ", data_s3, "jaddress: ", jaddress, "\n");
@@ -240,7 +241,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////AND//////////////
-			instruction = 32'b01000000001000100001100000000000	//AND item at address 1 with item at address 2, store in address 3, 0 shamt
+			instruction = 32'b01000000001000100001100000000000;	//AND item at address 1 with item at address 2, store in address 3, 0 shamt
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -268,7 +269,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////AND_I//////////////
-			instruction = 32'b01000100001000100000000000000100 		//ADD immediate (4)
+			instruction = 32'b01000100001000100000000000000100; 		//ADD immediate (4)
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -293,7 +294,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////OR//////////////
-			instruction = 32'b01001000001000100001100000000000	//OR item at address 1 with item at address 2, store in address 3, 0 shamt
+			instruction = 32'b01001000001000100001100000000000;	//OR item at address 1 with item at address 2, store in address 3, 0 shamt
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -321,7 +322,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////OR_I//////////////
-			instruction = 32'b01001100001000100000000000000100 		//ADD immediate (4)
+			instruction = 32'b01001100001000100000000000000100; 		//ADD immediate (4)
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -346,7 +347,7 @@ module DSPDecode_TB();
 			end
 			
 			/////////////XOR//////////////
-			instruction = 32'b01010000001000100001100000000000	//XOR item at address 1 with item at address 2, store in address 3, 0 shamt
+			instruction = 32'b01010000001000100001100000000000;	//XOR item at address 1 with item at address 2, store in address 3, 0 shamt
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -374,7 +375,7 @@ module DSPDecode_TB();
 			end
 			
 			/////////////XOR_I//////////////
-			instruction = 32'b01010100001000100000000000000100 		//ADD immediate (4)
+			instruction = 32'b01010100001000100000000000000100; 		//ADD immediate (4)
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -399,7 +400,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////SHLA//////////////
-			instruction = 32'b01011000001000100001100000000000
+			instruction = 32'b01011000001000100001100000000000;
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -422,7 +423,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////SHRA//////////////
-			instruction = 32'b01011100001000100001100000000000
+			instruction = 32'b01011100001000100001100000000000;
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -445,7 +446,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////SHLL//////////////
-			instruction = 32'b01100000001000100001100000000000
+			instruction = 32'b01100000001000100001100000000000;
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -468,7 +469,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////SHRL//////////////
-			instruction = 32'b01100100001000100001100000000000
+			instruction = 32'b01100100001000100001100000000000;
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -491,7 +492,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////ROL//////////////
-			instruction = 32'b01101000001000100001100000000000
+			instruction = 32'b01101000001000100001100000000000;
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -514,7 +515,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////ROR//////////////
-			instruction = 32'b01101100001000100001100000000000
+			instruction = 32'b01101100001000100001100000000000;
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -537,7 +538,7 @@ module DSPDecode_TB();
 			end
 			
 			/////////////JMP//////////////
-			instruction = 32'b10000000001000100000000000000100  //(address 4)
+			instruction = 32'b10000000001000100000000000000100;  //(address 4)
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -556,7 +557,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////BEZ//////////////
-			instruction = 32'b10000100001000100000000000000100 
+			instruction = 32'b10000100001000100000000000000100; 
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -579,7 +580,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////BNEZ//////////////
-			instruction = 32'b10001000001000100000000000000100 
+			instruction = 32'b10001000001000100000000000000100; 
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -602,7 +603,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////BEQ//////////////
-			instruction = 32'b10001100001000100000000000000100 
+			instruction = 32'b10001100001000100000000000000100; 
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -630,7 +631,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////LD//////////////
-			instruction = 32'b11001000001000100000000000000100 
+			instruction = 32'b11001000001000100000000000000100; 
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -653,7 +654,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////ST//////////////
-			instruction = 32'b11001100001000100000000000000100 
+			instruction = 32'b11001100001000100000000000000100; 
 			
 			read_data_s1_from_regFile = 2;
 			read_data_s2_from_regFile = 3;
@@ -679,7 +680,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////LD_IMM//////////////
-			instruction = 32'b11010000001000100000000000000100 
+			instruction = 32'b11010000001000100000000000000100; 
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -700,7 +701,7 @@ module DSPDecode_TB();
 			end
 
 			/////////////NOP//////////////
-			instruction = 32'b11111100001000100000000000000100 
+			instruction = 32'b11111100001000100000000000000100; 
 			
 			read_data_s1_from_regFile = 2;
 			
@@ -715,3 +716,5 @@ module DSPDecode_TB();
 				$display("Test failed. Wrong flow mode.\n");
 				$finish;
 			end
+	end
+endmodule
