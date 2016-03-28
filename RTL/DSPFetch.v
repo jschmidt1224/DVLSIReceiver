@@ -20,17 +20,15 @@ module DSPFetch (		//Gretchen, stop trying to make fetch happen. It's not going 
 	jump_addr,
 	jump_flag);
 
-	input 	rst, clk;
-	output 	[`MEM_ADDR_LEN-1:0] read_addr;
-	input 	[`INST_WORD_LEN-1:0] read_data;
-	output 	[`INST_WORD_LEN-1:0] instruction_out;
-	input 	[`MEM_ADDR_LEN-1:0] jump_addr;
-	input 	jump_flag;
 
-	wire [`REG_ADDR_LEN-1:0] read_addr, jump_addr;
-	wire [`INST_WORD_LEN-1:0] read_data, instruction_out;
-	wire jump_flag;
-	wire rst;
+	input		wire												clk;
+	input		wire												rst;
+	input 	wire	[`INST_WORD_LEN-1:0]	read_data;
+	input 	wire	[`MEM_ADDR_LEN-1:0]		jump_addr;
+	input 	wire												jump_flag;
+
+	output	wire	[`MEM_ADDR_LEN-1:0]		read_addr;
+	output 	wire	[`INST_WORD_LEN-1:0]	instruction_out;
 
 	reg [15:0] program_counter;
 
