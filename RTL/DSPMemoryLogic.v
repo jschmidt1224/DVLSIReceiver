@@ -26,6 +26,28 @@ module DSPMemoryLogic (
 	regFile_write_en
 );
 
+
+  input   wire  [`REG_WORD_LEN-1:0]   alu_result;
+  input   wire  [`MEM_MODE_LEN-1:0]   mem_mode;
+  input   wire  [`REG_WORD_LEN-1:0]   read_data_1;
+  input   wire  [`REG_WORD_LEN-1:0]   read_data_2;
+
+  input   wire  [`REG_WORD_LEN-1:0]   data_s1;
+  input   wire  [`REG_WORD_LEN-1:0]   data_s2;
+
+  input   wire                        clk;
+  input   wire                        write_back_en;
+
+  output  reg   [`REG_WORD_LEN-1:0]   write_data;
+  output  reg   [`REG_WORD_LEN-1:0]   write_back;
+  output  reg                         write_en;
+  output  reg                         regFile_write_en;
+
+  output  wire  [`SRAM_ADDR_LEN-1:0]  read_addr_1;
+  output  wire  [`SRAM_ADDR_LEN-1:0]  read_addr_2;
+  output  wire  [`SRAM_ADDR_LEN-1:0]  write_addr_2;
+
+/*
 	input alu_result, mem_mode, read_data_1, read_data_2, write_back_en;
 	input data_s1, data_s2, clk;
 	
@@ -45,6 +67,7 @@ module DSPMemoryLogic (
 	
 	reg write_en;
 	reg regFile_write_en;
+*/
 
 	assign read_addr_1 = data_s1[`SRAM_ADDR_LEN-1:0];
 	assign read_addr_2 = data_s1[`SRAM_ADDR_LEN-1:0];

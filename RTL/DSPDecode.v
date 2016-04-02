@@ -20,6 +20,32 @@ module DSPDecode(
 	data_s3,
 	jaddress);											//Address out to jump to	
 
+
+input   wire  [`INST_WORD_LEN-1:0]    instruction;
+input   wire  [`REG_WORD_LEN-1:0]     read_data_s1_from_regFile;
+input   wire  [`REG_WORD_LEN-1:0]     read_data_s2_from_regFile;
+input   wire  [`REG_WORD_LEN-1:0]     read_data_s3_from_regFile;
+
+output  reg   [`ALU_MODE_LEN-1:0]     alu_mode;
+output  reg   [`MEM_MODE_LEN-1:0]     mem_mode;
+output  reg   [`FLOW_MODE_LEN-1:0]    flow_mode;
+
+output  reg                           write_back_en;
+
+output  reg   [`REG_ADDR_LEN-1:0]     reg_addr1;
+output  reg   [`REG_ADDR_LEN-1:0]     reg_addr2;
+output  reg   [`REG_ADDR_LEN-1:0]     reg_addr3;
+output  reg   [`REG_ADDR_LEN-1:0]     reg_dest;
+
+output  reg   [`SHIFT_LEN-1:0]        shamt;
+
+output  reg   [`REG_WORD_LEN-1:0]     data_s1;
+output  reg   [`REG_WORD_LEN-1:0]     data_s2;
+output  reg   [`REG_WORD_LEN-1:0]     data_s3;
+
+output  reg   [`MEM_ADDR_LEN-1:0]     jaddress;
+
+/*  OLD DECLARATIONS
 input	 	instruction;
 input 	read_data_s1_from_regFile, read_data_s2_from_regFile, 
 				read_data_s3_from_regFile;			//Read from Regfile
@@ -42,19 +68,16 @@ reg [4:0]  shamt, reg_dest;
 reg [15:0] data_s1, data_s2, data_s3;
 reg [15:0] jaddress;
 reg write_back_en;
+*/
 
 //First 6 bits of the instruction are the opcode
-wire [5:0] opcode;
+wire [5:0]    opcode;
 
 //If an R type instruction
-reg r_type;							// < insert relevant comment here >
-reg [5:0] r_function;		//Last 6 bits are the function
-wire [4:0] R1, R2, R3;
-wire [15:0] Lit;
-
-//"concatenate and multiplex info to create an opcode to represent instruction type"
-wire [6:0] cat;		//meow
-
+reg           r_type;							// < insert relevant comment here >
+reg  [5:0]   r_function;		//Last 6 bits are the function
+wire [4:0]    R1, R2, R3;
+wire [15:0]   Lit;
 
 ///////////////MAIN DECODE/////////////////
 
@@ -475,11 +498,19 @@ always @(*) begin
 		default: begin
 			//d.op ={ALU_NOP, FALSE, MEM_NONE, FLOW_NONE};					//NOP		
 				$display("DECODE -- ERROR: opcode %b not defined", opcode);
+        r_type = `FALSE;
+        alu_mode = `ALU_NOP;
+        flow_mode = `FLOW_NONE;
+        mem_mode = `MEM_NONE;
+        write_back_en = `FALSE;
+        reg_addr1 = 5'b00000;
+        reg_addr2 = 5'b00000;
+        reg_dest  = 5'b00000;
 				//$finish();
 		end
 	endcase
 	
-		shamt = r_type ? instruction[10:6] : 0;
+		shamt = r_type ? instruction[10:6] : 5'b00000;
 end
 
 endmodule
