@@ -51,7 +51,7 @@ module ALU (opcode, A, B, C, shift, out);
             `ALU_SHLA: 		tmp = A <<< shift;
             `ALU_SHRA: 		tmp = A >>> shift;
             `ALU_SHRL: 		tmp = B >> shift;
-            `ALU_SHRL: 		tmp = B >> shift;
+            `ALU_SHLL: 		tmp = B << shift;
             `ALU_MAC:       tmp = (A * B) + C;
             `ALU_ROL:begin
 							tmp = {A,A} >> shift;
