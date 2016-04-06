@@ -39,9 +39,10 @@ input write_en;
 
 reg [DATA_WIDTH-1:0] mem [0:REG_DEPTH-1];
 
-always @(posedge write_en)
+always @(write_en or write_addr) begin
+	if(write_en)
 		mem[write_addr] = write_data;
-
+end
 
 always @(read_addr_1)
 	read_data_1 = mem[read_addr_1];
