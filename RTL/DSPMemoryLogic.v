@@ -47,6 +47,9 @@ module DSPMemoryLogic (
   output  wire  [`SRAM_ADDR_LEN-1:0]  read_addr_2;
   output  wire  [`SRAM_ADDR_LEN-1:0]  write_addr_2;
 
+          reg                         internal_write_en;
+          reg                         internal_regFile_write_en;
+
 /*
 	input alu_result, mem_mode, read_data_1, read_data_2, write_back_en;
 	input data_s1, data_s2, clk;
@@ -73,37 +76,65 @@ module DSPMemoryLogic (
 	assign read_addr_2 = data_s1[`SRAM_ADDR_LEN-1:0];
 	assign write_addr_2 = data_s1[`SRAM_ADDR_LEN-1:0];
 	
+  always @(clk) begin
+    if(clk == `TRUE) begin    
+      if(internal_regFile_write_en == `TRUE)
+        regFile_write_en = `TRUE;
+      else regFile_write_en = `FALSE;
+
+      if(internal_write_en == `TRUE)
+        write_en = `TRUE;
+      else write_en = `FALSE;
+    end
+    else begin
+      regFile_write_en = `FALSE;
+      write_en = `FALSE;
+    end
+  end
+
+
 	always @(*) begin
-		write_data    = 16'hxxxx;
-		write_en      = 1'bx;
-		write_back    = 16'hxxxx;
-		case (mem_mode)
+		write_data  = 16'hxxxx;
+		write_back  = 16'hxxxx;
+		internal_write_en          = 1'bx;
+    internal_regFile_write_en  = 1'bx;
+		
+    case (mem_mode)
+
 			`MEM_NONE: begin
 				// do nothing
 				if (write_back_en) begin
 					write_back = alu_result;
-					regFile_write_en = ~clk;
+					internal_regFile_write_en = `TRUE;
 				end
-				else regFile_write_en = 1'b0;
-				write_en = 1'b0;
+				else internal_regFile_write_en = `FALSE;
+				internal_write_en = `FALSE;
 			end
+
 			`MEM_LD: begin
 				if (data_s1[15]) write_back = read_data_2;
 				else write_back = read_data_1;
-				regFile_write_en = ~clk;
-				write_en = 1'b0;
-
+				internal_regFile_write_en = `TRUE;
+				internal_write_en = `FALSE;
 			end
+
 			`MEM_ST: begin
 				write_data = data_s2;
-				write_en = ~clk;
-				regFile_write_en = 1'b0;
+				internal_write_en = `TRUE;
+				internal_regFile_write_en = `FALSE;
 			end
+
 			`MEM_LD_IMM: begin
 				write_back = data_s1;
-				regFile_write_en = ~clk;
-				write_en = 1'b0;
+				internal_regFile_write_en = `TRUE;
+				internal_write_en = `FALSE;
 			end
+
+      default: begin
+        write_back = 16'h0000;
+        internal_regFile_write_en = `FALSE;
+        internal_write_en = `FALSE;
+      end
 		endcase
 	end
 endmodule

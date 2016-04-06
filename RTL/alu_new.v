@@ -46,13 +46,12 @@ module ALU (opcode, A, B, C, shift, out);
   
   qadd  qadd0 ( .a(A_chained),
                 .b(B_signed),
-                .out(QADD_out));
-  
-  
+                .out(QADD_out));  
 
   always @(*) begin
+    Y = 16'hxxxx;
     case(opcode)
-      `ALU_NOP:     Y = 16'hxxxx;
+      `ALU_NOP:     Y = 16'h0000;
       `ALU_ADD:     Y = QADD_out;
       `ALU_ADD_I:   Y = QADD_out;
       `ALU_SUB:     Y = QADD_out;
@@ -78,9 +77,9 @@ module ALU (opcode, A, B, C, shift, out);
       `ALU_XOR_I:   Y = A ^ B;
       `ALU_SHRL:    Y = A >> shift;
       `ALU_SHLL:    Y = A << shift;
-      `ALU_ROL:     begin     tmp_rotate = ({A,A} << shift);  Y = tmp_rotate[`REG_WORD_LEN*2-1:`REG_WORD_LEN-1]; end
-      `ALU_ROR:     begin     tmp_rotate = ({A,A} >> shift);  Y = tmp_rotate[`REG_WORD_LEN-1:0];                 end
-      default:      $display("ALU: ERROR - unknown opcode");
+      `ALU_ROL:     begin     tmp_rotate = ({A,A} << shift);  Y = tmp_rotate[`REG_WORD_LEN*2-1:`REG_WORD_LEN-1];  end
+      `ALU_ROR:     begin     tmp_rotate = ({A,A} >> shift);  Y = tmp_rotate[`REG_WORD_LEN-1:0];                  end
+      default:      begin     Y = 16'h0000;      $display("ALU: ERROR - unknown opcode");                         end
     endcase
   end
 endmodule
@@ -99,6 +98,8 @@ module int_alu(opcode, A,B,C, shift, out);
   assign out = Y;
 
   always @(A,B,C,shift) begin
+    Y = 16'hxxxx;
+    tmp = 32'hxxxx;
     case(opcode)
             `ALU_IADD: 		tmp = (A << shift) + B;
             `ALU_IADD_I:	tmp = A + B;
@@ -108,12 +109,13 @@ module int_alu(opcode, A,B,C, shift, out);
             `ALU_IMUL_I: 	tmp = A * B;
             `ALU_SHRA:    tmp = A >>> shift;
             `ALU_SHLA:    tmp = A <<< shift;
-            `ALU_BEZ:     tmp = ~|A;                 // |A = 1 if A != 0; 
-            `ALU_BNEZ:    tmp = |A;
-            `ALU_BEQ:     tmp = ~|(A^B);              
+            `ALU_BEZ:     tmp = {~|A,15'b000000000000000};                 // |A = 1 if A != 0; 
+            `ALU_BNEZ:    tmp = {|A,15'b000000000000000};
+            `ALU_BEQ:     tmp = {~|(A^B),15'b000000000000000};              
+            default: begin tmp = 16'h0000; $display("ALU: ERROR - unknown opcode"); end
     endcase
-    if(tmp > 32767)         Y = 32767;
-    else if (tmp < -32768)  Y = -32768;
+    if(tmp > 32767)         Y = 16'h7FFF;
+    else if (tmp < -32768)  Y = 16'h8000;
     else                    Y = tmp[15:0];
   end
 endmodule
@@ -166,8 +168,8 @@ module qadd(a,b,out);
     
   input   wire  [`REG_WORD_LEN-1:0] a;
   input   wire  [`REG_WORD_LEN-1:0] b;
-  input   wire  [`REG_WORD_LEN-1:0] out;
-          reg   [N-1:0]             res;
+  output  wire  [`REG_WORD_LEN-1:0] out;
+          reg   [`REG_WORD_LEN-1:0] res;
    
   assign out = res;
   
