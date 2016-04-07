@@ -1,10 +1,27 @@
-	//ALU operations
-	// typedef enum{ALU_NOP, ALU_ADD, ALU_ADD_I, ALU_IADD, ALU_IADD_I, ALU_SUB, ALU_SUB_I, ALU_ISUB, ALU_ISUB_I, ALU_MUL, ALU_MUL_I, ALU_IMUL, ALU_IMUL_I, ALU_MAC, ALU_SQR, ALU_AND, ALU_AND_I, ALU_OR, ALU_OR_I, ALU_XOR, ALU_XOR_I, ALU_SHLA, ALU_SHRA, ALU_SHLL, ALU_SHRL, ALU_ROL, ALU_ROR} ALU
+//DEFINITIONS FILE
 
-//`ifndef DEFINITIONS
-//`define DEFINITIONS
+/* TIMESCALE */
 
 `timescale 1 ns / 1 ns
+
+/* END TIMESCALE */
+
+
+`ifndef DEFINITIONS
+`define DEFINITIONS
+
+
+/* LOGIC DEFINITIONS */
+
+`define FALSE 1'b0
+`define TRUE  1'b1
+
+/* END LOGIC DEFINITIONS */
+
+
+
+
+/* ALU MODE DEFINITIONS */
 
 `define ALU_NOP     8'd0
 `define ALU_ADD     8'd1
@@ -37,9 +54,12 @@
 `define ALU_BNEZ		8'd28
 `define ALU_BEQ			8'd29
 
+/* END ALU MODE DEFINITIONS */
 
-	//Flow operations
-//	typedef enum{FLOW_NONE, FLOW_JMP, FLOW_BEZ, FLOW_BNEZ, FLOW_BEQ} FLOW
+
+
+
+/* FLOW MODE DEFINITIONS */
 
 `define FLOW_NONE 	3'd0
 `define FLOW_JMP  	3'd1
@@ -47,8 +67,14 @@
 `define FLOW_BNEZ 	3'd3
 `define FLOW_BEQ  	3'd4
 `define FLOW_HEAVY	3'd5  //For that time of the month
-	//Memory operations
-//	typedef enum{MEM_NONE, MEM_PUSH, MEM_POP, MEM_LD, MEM_ST, MEM_LD_IMM} MEM		//Last one is load immediate
+
+/* END FLOW MODE DEFINITIONS */
+
+
+
+
+/* MEMORY MODE DEFINITIONS */
+
 `define MEM_NONE   3'd0
 `define MEM_PUSH   3'd1
 `define MEM_POP	   3'd2
@@ -56,19 +82,23 @@
 `define MEM_ST     3'd4
 `define MEM_LD_IMM 3'd5
 
-	//Boolean (for R/W indication)
-//	typedef enum{FALSE = 0 TRUE = 1} BOOLEAN
-
-`define FALSE 1'b0
-`define TRUE  1'b1
-
-//	typedef reg struct packed{
-//		ALU				alu				// alu mode
-//		BOOLEAN 	r_w				// ???
-//		FLOW			flow				// flow control
-//	} OPERAND
+/* END MEMORY MODE DEFINITIONS */
 
 
+
+
+/* REGFILE DEFINITIONS */
+
+`define DATA_WIDTH  16
+`define ADDR_WIDTH  5
+`define REG_DEPTH   32
+
+/* END REGFILE DEFINITIONS */
+
+
+
+
+/* BUS WIDTH DEFINITIONS */
 
 `define INST_WORD_LEN  	32
 `define REG_WORD_LEN   	16
@@ -79,9 +109,47 @@
 `define FLOW_MODE_LEN	 	3
 `define MEM_MODE_LEN	 	3
 `define SHIFT_LEN			 	5
-//`endif
-//	typedef reg struct packed{
-//		OPERAND			op
-//		reg_word		rs, rt, rd
-//		bit [15:0]	addr 					//16 bit address
-//	} DECODED
+
+/* END BUS WIDTH DEFINITIONS */
+
+
+
+
+/* POST DECODE FLIP FLOP DEFINITIONS */
+
+`define DEC_FF_LEN			`ALU_MODE_LEN + `MEM_MODE_LEN + `FLOW_MODE_LEN + 2 + `SHIFT_LEN + `REG_ADDR_LEN + 3*`REG_WORD_LEN + `MEM_ADDR_LEN
+
+`define DEC_FF_ALU			`DEC_FF_LEN
+`define DEC_FF_MEM			`MEM_MODE_LEN + `FLOW_MODE_LEN + 2 + `SHIFT_LEN + `REG_ADDR_LEN + 3*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_FLOW			`FLOW_MODE_LEN + 2 + `SHIFT_LEN + `REG_ADDR_LEN + 3*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_WE				2 + `SHIFT_LEN + `REG_ADDR_LEN + 3*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_BRFL			1 + `SHIFT_LEN + `REG_ADDR_LEN + 3*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_SHIFT		`SHIFT_LEN + `REG_ADDR_LEN + 3*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_DEST			`REG_ADDR_LEN + 3*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_S1				3*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_S2				2*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_S3				1*`REG_WORD_LEN + `MEM_ADDR_LEN
+`define DEC_FF_JADDR		`MEM_ADDR_LEN
+
+/* END POST DECODE FLIP FLOP DEFINITIONS */
+
+
+
+
+/* POST EXECUTE FLIP FLOP DEFINITIONS */
+
+`define ALU_FF_LEN			`MEM_MODE_LEN + `FLOW_MODE_LEN + 2 + `REG_ADDR_LEN + `MEM_ADDR_LEN + `REG_WORD_LEN + `REG_WORD_LEN + `REG_WORD_LEN
+`define ALU_FF_MEM			`ALU_FF_LEN
+`define ALU_FF_FLOW			`FLOW_MODE_LEN + 2 + `REG_ADDR_LEN + `MEM_ADDR_LEN + `REG_WORD_LEN + `REG_WORD_LEN + `REG_WORD_LEN
+`define ALU_FF_WB				2 + `REG_ADDR_LEN + `MEM_ADDR_LEN + `REG_WORD_LEN + `REG_WORD_LEN + `REG_WORD_LEN
+`define ALU_FF_BRFL			1 + `REG_ADDR_LEN + `MEM_ADDR_LEN + `REG_WORD_LEN + `REG_WORD_LEN + `REG_WORD_LEN
+`define ALU_FF_DEST			`REG_ADDR_LEN + `MEM_ADDR_LEN + `REG_WORD_LEN + `REG_WORD_LEN + `REG_WORD_LEN
+`define ALU_FF_JADDR		`MEM_ADDR_LEN + `REG_WORD_LEN + `REG_WORD_LEN + `REG_WORD_LEN
+`define ALU_FF_S1				`REG_WORD_LEN + `REG_WORD_LEN + `REG_WORD_LEN
+`define ALU_FF_S2				`REG_WORD_LEN + `REG_WORD_LEN
+`define ALU_FF_ALUOUT		`REG_WORD_LEN
+
+/* POST EXECUTE FLIP FLOP DEFINITIONS */
+
+`endif
+

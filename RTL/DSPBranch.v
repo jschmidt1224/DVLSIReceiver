@@ -1,4 +1,4 @@
-`include "definitions.v"
+`include "./RTL/definitions.v"
 
 /*
 This block is in control of branch logic
@@ -42,7 +42,7 @@ module DSPBranch(
 			`FLOW_NONE: 
       begin 
         internal_flag = 1'b0;			
-        internal_addr = address;
+        internal_addr = `MEM_ADDR_LEN'd0;
       end      
       `FLOW_JMP:
 			begin

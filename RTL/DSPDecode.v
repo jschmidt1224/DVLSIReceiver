@@ -1,4 +1,4 @@
-`include "definitions.v"
+`include "./RTL/definitions.v"
 
 
 module DSPDecode(
@@ -9,6 +9,7 @@ module DSPDecode(
 	alu_mode,												//Output indicating operation for ALU
 	mem_mode,												//How to handle memory
 	flow_mode,											//Flow control mode
+	branch_flag,										//Flag for pipeline branching
 	write_back_en,									//Whether or not to WB to register
 	reg_addr1,											//Address given to RegFile
 	reg_addr2,
@@ -21,10 +22,10 @@ module DSPDecode(
 	jaddress);											//Address out to jump to	
 
 
-input   wire  [`INST_WORD_LEN-1:0]    instruction;
-input   wire  [`REG_WORD_LEN-1:0]     read_data_s1_from_regFile;
-input   wire  [`REG_WORD_LEN-1:0]     read_data_s2_from_regFile;
-input   wire  [`REG_WORD_LEN-1:0]     read_data_s3_from_regFile;
+input         [`INST_WORD_LEN-1:0]    instruction;
+input         [`REG_WORD_LEN-1:0]     read_data_s1_from_regFile;
+input         [`REG_WORD_LEN-1:0]     read_data_s2_from_regFile;
+input         [`REG_WORD_LEN-1:0]     read_data_s3_from_regFile;
 
 output  reg   [`ALU_MODE_LEN-1:0]     alu_mode;
 output  reg   [`MEM_MODE_LEN-1:0]     mem_mode;
@@ -45,39 +46,18 @@ output  reg   [`REG_WORD_LEN-1:0]     data_s3;
 
 output  reg   [`MEM_ADDR_LEN-1:0]     jaddress;
 
-/*  OLD DECLARATIONS
-input	 	instruction;
-input 	read_data_s1_from_regFile, read_data_s2_from_regFile, 
-				read_data_s3_from_regFile;			//Read from Regfile
+output	wire													branch_flag;
 
-output  alu_mode;
-output  mem_mode;
-output  flow_mode;
-output  write_back_en;
-output  reg_addr1, reg_addr2, reg_addr3;		//Access RegFile
-output  shamt, reg_dest;
-output  data_s1, data_s2, data_s3; //data_s1 and data_S2 to ALU
-output  jaddress;
 
-wire [`INST_WORD_LEN-1:0] instruction;
-wire [15:0] read_data_s1_from_regFile, read_data_s2_from_regFile, read_data_s3_from_regFile;
-reg [7:0] alu_mode;
-reg [2:0]  mem_mode, flow_mode;
-reg [4:0]  reg_addr1, reg_addr2, reg_addr3;
-reg [4:0]  shamt, reg_dest;
-reg [15:0] data_s1, data_s2, data_s3;
-reg [15:0] jaddress;
-reg write_back_en;
-*/
 
 //First 6 bits of the instruction are the opcode
-wire [5:0]    opcode;
+				wire 	[5:0]    								opcode;
 
-//If an R type instruction
-reg           r_type;							// < insert relevant comment here >
-reg  [5:0]   r_function;		//Last 6 bits are the function
-wire [4:0]    R1, R2, R3;
-wire [15:0]   Lit;
+				//If an R type instruction
+				reg           								r_type;							// < insert relevant comment here >
+				reg  	[5:0]    								r_function;		//Last 6 bits are the function
+				wire 	[4:0]    								R1, R2, R3;
+				wire 	[15:0]   								Lit;
 
 ///////////////MAIN DECODE/////////////////
 
@@ -86,6 +66,7 @@ assign R2 = instruction[20:16];
 assign R3 = instruction[15:11];
 assign opcode = instruction[31:26];
 assign Lit = instruction[15:0];
+assign branch_flag = (flow_mode != 0) ? 1'b0 : 1'b1;
 
 always @(*) begin
 	reg_addr1 = 5'bxxxxx;
@@ -99,7 +80,7 @@ always @(*) begin
 	shamt     = 5'bxxxxx;
 	
 	case(opcode)		//meow, put the operations in here
-		6'b000000:	begin 
+		6'b001100:	begin 
 				//d.op ={ALU_ADD, TRUE, MEM_NONE, FLOW_NONE};					//ADD
 				r_type = `TRUE;
 				alu_mode 	= `ALU_ADD;
@@ -494,6 +475,18 @@ always @(*) begin
 				write_back_en = `TRUE;
 				reg_dest = R1; 			//address the literal should be placed in		
 				data_s1  = Lit; 		//the actual literal
+		end
+		6'b000000: begin
+		//d.op ={ALU_NOP, FALSE, MEM_NONE, FLOW_NONE};					//NOP		
+        r_type = `FALSE;
+        alu_mode = `ALU_NOP;
+        flow_mode = `FLOW_NONE;
+        mem_mode = `MEM_NONE;
+        write_back_en = `FALSE;
+        reg_addr1 = 5'b00000;
+        reg_addr2 = 5'b00000;
+        reg_dest  = 5'b00000;
+				//$finish();
 		end
 		default: begin
 			//d.op ={ALU_NOP, FALSE, MEM_NONE, FLOW_NONE};					//NOP		

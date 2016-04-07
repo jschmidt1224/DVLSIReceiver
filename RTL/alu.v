@@ -1,5 +1,5 @@
 
-`include "definitions.v"
+`include "./RTL/definitions.v"
 module ALU (opcode, A, B, C, shift, out);
 
   input   wire          [`ALU_MODE_LEN-1:0]   opcode;
@@ -111,7 +111,8 @@ module int_alu(opcode, A,B,C, shift, out);
             `ALU_SHLA:    tmp = A <<< shift;
             `ALU_BEZ:     tmp = {~|A,15'b000000000000000};                 // |A = 1 if A != 0; 
             `ALU_BNEZ:    tmp = {|A,15'b000000000000000};
-            `ALU_BEQ:     tmp = {~|(A^B),15'b000000000000000};              
+            `ALU_BEQ:     tmp = {~|(A^B),15'b000000000000000};
+            `ALU_NOP:			tmp = 16'h0000;               
             default: begin tmp = 16'h0000; $display("ALU: ERROR - unknown opcode"); end
     endcase
     if(tmp > 32767)         Y = 16'h7FFF;

@@ -1,6 +1,7 @@
 *~
-*/INCA*
-*/irun*
-*/waves*
-*/.simvision/*
+*INCA*
+*irun*
+*waves*
+*simvision*
 *.swp
+*ncsim*

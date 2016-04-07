@@ -8,9 +8,11 @@ when WE is high, the contents of write_data will be written
 to the corresponding register
 */
 
-`include "definitions.v"
+`include "./RTL/definitions.v"
 
 module RegFile(
+		clk,
+		rst,
 		read_addr_1, 
 		read_addr_2,
 		read_addr_3,		
@@ -21,36 +23,44 @@ module RegFile(
 		write_data, 
 		write_en); //active HIGH af
 
-parameter DATA_WIDTH = 16 ;
-parameter ADDR_WIDTH = 5 ;
-parameter REG_DEPTH = 1 << ADDR_WIDTH;		//bitshifts represent powers of 2
 
-input wire [ADDR_WIDTH-1:0] read_addr_1;
-input wire [ADDR_WIDTH-1:0] read_addr_2;
-input wire [ADDR_WIDTH-1:0] read_addr_3;
-input wire [ADDR_WIDTH-1:0] write_addr;
+input													clk;
+input													rst;
 
-output reg [DATA_WIDTH-1:0] read_data_1;
-output reg [DATA_WIDTH-1:0] read_data_2;
-output reg [DATA_WIDTH-1:0] read_data_3;
+input 		 [`ADDR_WIDTH-1:0] 	read_addr_1;
+input 		 [`ADDR_WIDTH-1:0] 	read_addr_2;
+input			 [`ADDR_WIDTH-1:0] 	read_addr_3;
+input			 [`ADDR_WIDTH-1:0] 	write_addr;
 
-input wire [DATA_WIDTH-1:0] write_data;
-input write_en;
+output reg [`DATA_WIDTH-1:0] 	read_data_1;
+output reg [`DATA_WIDTH-1:0] 	read_data_2;
+output reg [`DATA_WIDTH-1:0] 	read_data_3;
 
-reg [DATA_WIDTH-1:0] mem [0:REG_DEPTH-1];
+input 		 [`DATA_WIDTH-1:0] 	write_data;
 
-always @(write_en or write_addr) begin
-	if(write_en)
-		mem[write_addr] = write_data;
+input 												write_en;
+
+reg [`DATA_WIDTH-1:0] 				mem 					[0:`REG_DEPTH-1];
+
+integer i;
+
+
+
+always @(negedge clk or posedge rst) begin
+	if(rst) begin
+		for(i = 0; i < 32; i=i+1) mem[i] <= 16'h0000;
+	end
+	else if(write_en)	mem[write_addr] <= write_data;
+	else mem[write_addr] <= mem[write_addr];	
 end
 
-always @(read_addr_1)
+always @(*)
 	read_data_1 = mem[read_addr_1];
 
-always @(read_addr_2)
+always @(*)
 	read_data_2 = mem[read_addr_2];
 
-always @(read_addr_3)
+always @(*)
 	read_data_3 = mem[read_addr_3];
 
 endmodule

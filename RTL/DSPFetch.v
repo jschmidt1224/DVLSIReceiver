@@ -1,4 +1,4 @@
-`include "definitions.v"
+`include "./RTL/definitions.v"
 /*
 This block is in charge of the Program Counter (PC)
 On every clock cycle, the PC is either incremented by one
@@ -35,12 +35,12 @@ module DSPFetch (		//Gretchen, stop trying to make fetch happen. It's not going 
 always @(posedge clk)
   program_counter <= pc_next;
 
-always @(program_counter or rst) begin
+always @(program_counter or rst or jump_flag) begin
   pc_next = 16'dx;
   if(rst)
     pc_next = 16'd0;
-//  else if(jump_flag)
-//    pc_next = jump_addr;
+  else if(jump_flag)
+    pc_next = jump_addr;
   else
     pc_next = program_counter + 16'd1;
 end

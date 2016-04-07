@@ -4,7 +4,7 @@
  *
  */
 
-`include "definitions.v"
+`include "./RTL/definitions.v"
 
 module DSPMemoryLogic (
 	clk,					// INPUT  THIS IS A CLOCK IF YOU DONT GET IT GO AWAY
@@ -41,7 +41,7 @@ module DSPMemoryLogic (
   output  reg   [`REG_WORD_LEN-1:0]   write_data;
   output  reg   [`REG_WORD_LEN-1:0]   write_back;
   output  reg                         write_en;
-  output  reg                         regFile_write_en;
+  output  wire                        regFile_write_en;
 
   output  wire  [`SRAM_ADDR_LEN-1:0]  read_addr_1;
   output  wire  [`SRAM_ADDR_LEN-1:0]  read_addr_2;
@@ -75,23 +75,23 @@ module DSPMemoryLogic (
 	assign read_addr_1 = data_s1[`SRAM_ADDR_LEN-1:0];
 	assign read_addr_2 = data_s1[`SRAM_ADDR_LEN-1:0];
 	assign write_addr_2 = data_s1[`SRAM_ADDR_LEN-1:0];
+
 	
   always @(clk) begin
-    if(clk == `TRUE) begin    
-      if(internal_regFile_write_en == `TRUE)
-        regFile_write_en = `TRUE;
-      else regFile_write_en = `FALSE;
-
+    if(clk == `FALSE) begin    
       if(internal_write_en == `TRUE)
         write_en = `TRUE;
       else write_en = `FALSE;
     end
     else begin
-      regFile_write_en = `FALSE;
       write_en = `FALSE;
     end
   end
 
+
+	assign regFile_write_en = internal_regFile_write_en;
+//	assign write_en = internal_write_en;
+	
 
 	always @(*) begin
 		write_data  = 16'hxxxx;
