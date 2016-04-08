@@ -1,5 +1,9 @@
-
+`ifdef SIM
 `include "./RTL/definitions.v"
+`else
+`include "definitions.v"
+`endif
+
 module ALU (opcode, A, B, C, shift, out);
 
   input   wire          [`ALU_MODE_LEN-1:0]   opcode;
@@ -18,8 +22,14 @@ module ALU (opcode, A, B, C, shift, out);
           wire          [`REG_WORD_LEN-1:0]   QMULT_out;
           reg           [`REG_WORD_LEN-1:0]   B_signed;         // negate B for SUB and SUB_I
           reg           [`REG_WORD_LEN*2-1:0] tmp_rotate;
-          
+          reg           [`REG_WORD_LEN-1:0]   qadd_b;
+
+
   assign out = Y;
+
+  always @(*) begin
+    qadd_b = (opcode == `ALU_MAC) ? C : B_signed;
+  end
 
   always @(A,shift) begin
     A_shift = A << shift;
@@ -45,7 +55,7 @@ module ALU (opcode, A, B, C, shift, out);
                 .o_result(QMULT_out));
   
   qadd  qadd0 ( .a(A_chained),
-                .b(B_signed),
+                .b(qadd_b),
                 .out(QADD_out));  
 
   always @(*) begin

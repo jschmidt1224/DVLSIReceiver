@@ -3,8 +3,11 @@
  * DATE   : 3-21-2016
  *
  */
-
+`ifdef SIM
 `include "./RTL/definitions.v"
+`else
+`include "definitions.v"
+`endif
 
 module DSPMemoryLogic (
 	clk,					// INPUT  THIS IS A CLOCK IF YOU DONT GET IT GO AWAY

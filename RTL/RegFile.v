@@ -7,8 +7,11 @@ the corresponding register
 when WE is high, the contents of write_data will be written 
 to the corresponding register
 */
-
+`ifdef SIM
 `include "./RTL/definitions.v"
+`else
+`include "definitions.v"
+`endif
 
 module RegFile(
 		clk,

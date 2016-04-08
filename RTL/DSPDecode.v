@@ -1,5 +1,8 @@
+`ifdef SIM
 `include "./RTL/definitions.v"
-
+`else
+`include "definitions.v"
+`endif
 
 module DSPDecode(
 	instruction,										// Instruction word coming from fetch
@@ -229,18 +232,6 @@ always @(*) begin
 				reg_dest = R2;
 				data_s1 = read_data_s1_from_regFile;
 				data_s2 = Lit;		//literal
-		end
-		6'b001100: begin
-				//d.op ={ALU_SQR, TRUE, MEM_NONE, FLOW_NONE};					//SQR
-				r_type = `FALSE;
-				alu_mode 	= `ALU_MUL;
-				mem_mode  = `MEM_NONE;
-				flow_mode = `FLOW_NONE;
-				write_back_en = `TRUE;
-				reg_addr1 = R1;
-				reg_dest = R3;
-				data_s1 = read_data_s1_from_regFile;
-				data_s2 = read_data_s1_from_regFile;
 		end
 		6'b001101: begin
 				//d.op ={ALU_MAC, TRUE, MEM_NONE, FLOW_NONE};					//MAC

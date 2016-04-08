@@ -1,0 +1,46 @@
+
+
+Working Directory = /afs/ee.cooper.edu/user/k/u/kurutu/Digital_VLSI/DVLSIReceiver/Genus/DSP
+QoS Summary for DSP
+========================================================================================
+Metric                  generic    map        syn_opt    final     
+========================================================================================
+Slack (ps):               -328.1       72.7        0.1        0.1
+  R2R (ps):               -328.1       72.7        0.1        0.1
+  I2R (ps):                936.5      721.1      611.0      611.0
+  R2O (ps):               4289.1     4201.6     4172.6     4172.6
+  I2O (ps):               4116.4     4323.0     4323.0     4323.0
+  CG  (ps):               1997.1     1883.6     1981.2     1981.2
+TNS (ps):                    420          0          0          0
+  R2R (ps):                420.0        0.0        0.0        0.0
+  I2R (ps):                  0.0        0.0        0.0        0.0
+  R2O (ps):                  0.0        0.0        0.0        0.0
+  I2O (ps):                  0.0        0.0        0.0        0.0
+  CG  (ps):                  0.0        0.0        0.0        0.0
+Failing Paths:                 3          0          0          0
+Area:                        214      28523      25457      25457
+Instances:                  7721       9929       9032       9032
+Utilization (%):            0.00       0.00       0.00       0.00
+Tot. Net Length (um):   no_value   no_value   no_value   no_value
+Avg. Net Length (um):   no_value   no_value   no_value   no_value
+Total Overflow H:              0          0          0          0
+Total Overflow V:              0          0          0          0
+Route Overflow H (%):   no_value   no_value   no_value   no_value
+Route Overflow V (%):   no_value   no_value   no_value   no_value
+========================================================================================
+CPU  Runtime (m:s):        00:21      01:32      00:46      00:00
+Real Runtime (m:s):        00:24      01:17      00:48      00:02
+CPU  Elapsed (m:s):        00:25      01:57      02:43      02:43
+Real Elapsed (m:s):        00:25      01:42      02:30      02:32
+Memory (MB):              406.17     465.81     465.81     465.81
+========================================================================================
+
+========================================================================================
+Flow Settings:
+========================================================================================
+Total Runtime (m:s): 02:32
+Total Memory (MB):   465.81
+Executable Version:  15.21
+========================================================================================
+
+

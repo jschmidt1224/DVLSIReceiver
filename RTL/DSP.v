@@ -1,4 +1,5 @@
 //Top Level DSP Module
+`ifdef SIM
 `include "./RTL/definitions.v"
 `include "./RTL/DSPFetch.v"
 `include "./RTL/DSPDecode.v"
@@ -8,6 +9,18 @@
 `include "./RTL/DSPMemoryLogic.v"
 `include "./RTL/FF.v"
 
+`else
+
+`include "definitions.v"
+`include "DSPFetch.v"
+`include "DSPDecode.v"
+`include "DSPBranch.v"
+`include "alu.v"
+`include "RegFile.v"
+`include "DSPMemoryLogic.v"
+`include "FF.v"
+
+`endif
 
 module DSP (
 	clk,

@@ -1,7 +1,11 @@
+`define SIM
+
 `include "./RTL/definitions.v"		// bus width, opcode, and internal definitions
-`include "./RTL/DSP.v"			// main DSP module
+`include "./Genus/DSP/outputs/DSP.v"			// main DSP module
 `include "./RTL/sram.v"			// data sram (15 bit address)
 `include "./Testbench/rom.v"		// instruction sram (temporary, should be rom eventually)
+
+`include "/afs/ee.cooper.edu/courses/ece447/gpdk/GPDK045/gsclib045_svt_v4.4/gsclib045/verilog/slow_vdd1v0_basicCells.v"
 
 module DSP_tb();
 

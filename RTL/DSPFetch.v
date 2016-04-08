@@ -1,4 +1,8 @@
+`ifdef SIM
 `include "./RTL/definitions.v"
+`else
+`include "definitions.v"
+`endif
 /*
 This block is in charge of the Program Counter (PC)
 On every clock cycle, the PC is either incremented by one
@@ -21,21 +25,34 @@ module DSPFetch (		//Gretchen, stop trying to make fetch happen. It's not going 
 	jump_flag);
 
 
-	input		wire												clk;
-	input		wire												rst;
-	input 	wire	[`INST_WORD_LEN-1:0]	read_data;
-	input 	wire	[`MEM_ADDR_LEN-1:0]		jump_addr;
-	input 	wire												jump_flag;
+	input		    												clk;
+	input		    												rst;
+	input 	    	[`INST_WORD_LEN-1:0]	read_data;
+	input 	    	[`MEM_ADDR_LEN-1:0]		jump_addr;
+	input 	    												jump_flag;
 
 	output	wire	[`MEM_ADDR_LEN-1:0]		read_addr;
-	output 	wire	[`INST_WORD_LEN-1:0]	instruction_out;
+	output 	wire	[`INST_WORD_LEN-1:0]    	instruction_out;
 
 	reg [`MEM_ADDR_LEN-1:0] program_counter;
-  reg [`MEM_ADDR_LEN-1:0] pc_next;
-always @(posedge clk)
-  program_counter <= pc_next;
+//  reg [`MEM_ADDR_LEN-1:0] pc_next;
 
-always @(program_counter or rst or jump_flag) begin
+	assign read_addr = program_counter;
+  //assign instruction_out = read_data;
+
+	assign	instruction_out = read_data;
+
+
+always @(posedge clk or posedge rst) begin
+	if(rst)
+		program_counter <= 0;
+	else if(jump_flag)
+		program_counter <= jump_addr;
+	else
+		program_counter <= program_counter +1;
+end
+/*
+ * always @(program_counter or clk or rst or jump_flag) begin
   pc_next = 16'dx;
   if(rst)
     pc_next = 16'd0;
@@ -44,8 +61,7 @@ always @(program_counter or rst or jump_flag) begin
   else
     pc_next = program_counter + 16'd1;
 end
+*/
 
-	assign read_addr = program_counter;
-	assign instruction_out = read_data;
 
 endmodule

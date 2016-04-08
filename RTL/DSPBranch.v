@@ -1,5 +1,8 @@
+`ifdef SIM
 `include "./RTL/definitions.v"
-
+`else
+`include "definitions.v"
+`endif
 /*
 This block is in control of branch logic
 It must determine if any branch is needed based on the
