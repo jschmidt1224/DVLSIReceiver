@@ -6,7 +6,8 @@
 `include "./RTL/DSPBranch.v"
 `include "./RTL/alu.v"
 `include "./RTL/RegFile.v"
-`include "./RTL/DSPMemoryLogic.v"
+`include "./RTL/DSPMem.v"
+`include "./RTL/DSPWB.v"
 `include "./RTL/FF.v"
 
 `else
@@ -17,7 +18,8 @@
 `include "DSPBranch.v"
 `include "alu.v"
 `include "RegFile.v"
-`include "DSPMemoryLogic.v"
+`include "DSPMem.v"
+`include "DSPWB.v"
 `include "FF.v"
 
 `endif
@@ -52,10 +54,10 @@ module DSP (
 	output	wire												write_en_2;
 
 					wire	[`INST_WORD_LEN-1:0]	FETCH_instruction_out;
-					
+
 					wire	[`INST_WORD_LEN-1:0]	IFFF_instruction_out;
-					
-					
+
+
 					wire	[`REG_WORD_LEN-1:0]		REGFILE_read_data_1;
 					wire	[`REG_WORD_LEN-1:0]		REGFILE_read_data_2;
 					wire	[`REG_WORD_LEN-1:0]		REGFILE_read_data_3;
@@ -74,7 +76,7 @@ module DSP (
 					wire	[`REG_WORD_LEN-1:0]		DECODE_data_s2;
 					wire	[`REG_WORD_LEN-1:0]		DECODE_data_s3;
 					wire	[`MEM_ADDR_LEN-1:0]		DECODE_jaddress;
-					
+
 					wire	[`ALU_MODE_LEN-1:0]		DECFF_alu_mode;
 					wire	[`FLOW_MODE_LEN-1:0]	DECFF_flow_mode;
 					wire												DECFF_branch_flag;
@@ -86,18 +88,18 @@ module DSP (
 					wire	[`REG_WORD_LEN-1:0]		DECFF_data_s2;
 					wire	[`REG_WORD_LEN-1:0]		DECFF_data_s3;
 					wire	[`MEM_ADDR_LEN-1:0]		DECFF_jaddress;
-					
-					
-					
+
+
+
 					wire	[`DEC_FF_LEN-1:0]			DECFF_in;
 					wire	[`DEC_FF_LEN-1:0]			DECFF_out;
-					
+
 
 					wire	[`REG_WORD_LEN-1:0]		ALU_out;
-					
+
 					wire	[`ALU_FF_LEN-1:0]			ALUFF_in;
-					wire	[`ALU_FF_LEN-1:0]			ALUFF_out;			
-										
+					wire	[`ALU_FF_LEN-1:0]			ALUFF_out;
+
 					wire	[`MEM_MODE_LEN-1:0]		ALUFF_mem_mode;
 					wire	[`FLOW_MODE_LEN-1:0]	ALUFF_flow_mode;
 					wire												ALUFF_write_back_en;
@@ -107,24 +109,27 @@ module DSP (
 					wire	[`REG_WORD_LEN-1:0]		ALUFF_data_s1;
 					wire	[`REG_WORD_LEN-1:0]		ALUFF_data_s2;
 					wire	[`REG_WORD_LEN-1:0]		ALUFF_alu_out;
-					
 
-					wire	[`REG_WORD_LEN-1:0]		MEMLOG_write_back;
-					wire												MEMLOG_regFile_write_en;
-					
+
+					wire	[`REG_WORD_LEN-1:0]		MEM_mem_out;
+					wire												MEM_write_en_out;
+
+					wire	[`REG_WORD_LEN-1:0]		WB_write_back;
+					wire												WB_regFile_write_en;
+
 					wire												BRANCH_jump_flag;
 					wire	[`MEM_ADDR_LEN-1:0]		BRANCH_jump_addr;
-					
+
 					wire	[`MEM_ADDR_LEN:0]			BRFF_in;
 					wire	[`MEM_ADDR_LEN:0]			BRFF_out;
-					
-					
+
+
 					wire												clk_gated;
-					
+
 	assign clk_gated = (clk & DECODE_branch_flag & DECFF_branch_flag & ALUFF_branch_flag) | (clk & rst);
 	assign BRFF_in = {BRANCH_jump_addr, BRANCH_jump_flag};
 	assign DECFF_in = {DECODE_alu_mode, DECODE_mem_mode, DECODE_flow_mode, DECODE_write_back_en, DECODE_branch_flag, DECODE_shamt, DECODE_reg_dest, DECODE_data_s1, DECODE_data_s2, DECODE_data_s3, DECODE_jaddress};
-	
+
 	assign DECFF_alu_mode = 			DECFF_out		[`DEC_FF_ALU-1		:		`DEC_FF_MEM			];
 	assign DECFF_mem_mode = 			DECFF_out		[`DEC_FF_MEM-1		:		`DEC_FF_FLOW		];
 	assign DECFF_flow_mode = 			DECFF_out		[`DEC_FF_FLOW-1		:		`DEC_FF_WE			];
@@ -136,19 +141,19 @@ module DSP (
 	assign DECFF_data_s2 = 				DECFF_out		[`DEC_FF_S2-1			:		`DEC_FF_S3			];
 	assign DECFF_data_s3 =				DECFF_out		[`DEC_FF_S3-1			:		`DEC_FF_JADDR		];
 	assign DECFF_jaddress =				DECFF_out		[`DEC_FF_JADDR-1	:		0								];
-	
+
 	assign ALUFF_in = {DECFF_mem_mode, DECFF_flow_mode, DECFF_write_back_en, DECFF_branch_flag, DECFF_reg_dest, DECFF_jaddress, DECFF_data_s1, DECFF_data_s2, ALU_out};
-	
+
 	assign ALUFF_mem_mode = 			ALUFF_out		[`ALU_FF_MEM-1		:		`ALU_FF_FLOW		];
 	assign ALUFF_flow_mode = 			ALUFF_out		[`ALU_FF_FLOW-1		:		`ALU_FF_WB			];
 	assign ALUFF_write_back_en = 	ALUFF_out		[`ALU_FF_WB-1			:		`ALU_FF_BRFL		];
 	assign ALUFF_branch_flag = 		ALUFF_out		[`ALU_FF_BRFL-1		:		`ALU_FF_DEST		];
 	assign ALUFF_reg_dest = 			ALUFF_out		[`ALU_FF_DEST-1		:		`ALU_FF_JADDR		];
 	assign ALUFF_jaddress = 			ALUFF_out		[`ALU_FF_JADDR-1	:		`ALU_FF_S1			];
-	assign ALUFF_data_s1 = 				ALUFF_out		[`ALU_FF_S1-1			:		`ALU_FF_S2			]; 
+	assign ALUFF_data_s1 = 				ALUFF_out		[`ALU_FF_S1-1			:		`ALU_FF_S2			];
 	assign ALUFF_data_s2 = 				ALUFF_out		[`ALU_FF_S2-1			:		`ALU_FF_ALUOUT	];
-	assign ALUFF_alu_out = 				ALUFF_out		[`ALU_FF_ALUOUT-1	:		0								];	
-	
+	assign ALUFF_alu_out = 				ALUFF_out		[`ALU_FF_ALUOUT-1	:		0								];
+
 	DSPFetch dspFetch(
 		.clk							(clk_gated									),
 		.rst							(rst												),
@@ -184,7 +189,7 @@ module DSP (
 		.data_s2										(DECODE_data_s2					),
 		.data_s3										(DECODE_data_s3					),
 		.jaddress										(DECODE_jaddress				));
-		
+
 	FF #(`DEC_FF_LEN) DECFF(
 		.data			(DECFF_in			),
 		.trigger	(clk					),
@@ -202,8 +207,8 @@ module DSP (
 		.read_data_1			(REGFILE_read_data_1	    ),
 		.read_data_2			(REGFILE_read_data_2	    ),
 		.read_data_3			(REGFILE_read_data_3	    ),
-		.write_data				(MEMLOG_write_back	      ),
-		.write_en					(MEMLOG_regFile_write_en  ));
+		.write_data				(WB_write_back			      ),
+		.write_en					(WB_regFil_write_en			  ));
 
 	ALU alu(
 		.opcode						(DECFF_alu_mode	),
@@ -212,7 +217,7 @@ module DSP (
 		.C								(DECFF_data_s3		),
 		.shift						(DECFF_shamt			),
 		.out							(ALU_out					));
-		
+
 	FF #(`ALU_FF_LEN) ALUFF(
 		.data			(ALUFF_in			),
 		.trigger	(clk					),
@@ -226,7 +231,7 @@ module DSP (
 		.address					(ALUFF_jaddress			),
 		.jump_addr				(BRANCH_jump_addr			),
 		.jump_flag				(BRANCH_jump_flag			));
-		
+
 	FF #(`MEM_ADDR_LEN + 1) BRFF (
 		.data							(BRFF_in		),
 		.trigger					(clk				),
@@ -234,22 +239,29 @@ module DSP (
 		.q								(BRFF_out		));
 
 
-	DSPMemoryLogic dspMemoryLogic(
-		.clk							(clk											),
-		.write_addr_2			(write_addr_2							),
-		.write_data				(write_data_2							),
-		.write_en					(write_en_2								),
-		.read_addr_1			(read_addr_1							),
-		.read_addr_2			(read_addr_2							),
-		.read_data_1			(read_data_1							),
-		.read_data_2			(read_data_2							),
-		.alu_result				(ALUFF_alu_out						),
-		.mem_mode					(ALUFF_mem_mode						),
-		.data_s1					(ALUFF_data_s1						),
-		.data_s2					(ALUFF_data_s2						),
-		.write_back_en		(ALUFF_write_back_en			),
-		.write_back				(MEMLOG_write_back				),
-		.regFile_write_en	(MEMLOG_regFile_write_en	));
+	DSPMem dspMem(
+		.clk								(clk											),
+		.write_addr_2				(write_addr_2							),
+		.write_data					(write_data_2							),
+		.write_en						(write_en_2								),
+		.read_addr_1				(read_addr_1							),
+		.read_addr_2				(read_addr_2							),
+		.read_data_1				(read_data_1							),
+		.read_data_2				(read_data_2							),
+		.alu_result					(ALUFF_alu_out						),
+		.mem_mode						(ALUFF_mem_mode						),
+		.data_s1						(ALUFF_data_s1						),
+		.data_s2						(ALUFF_data_s2						),
+		.mem_out						(MEM_mem_out							),
+		.write_back_en_in		(ALUFF_write_back_en			),
+		.write_back_en_out	(MEM_write_en_out					));
+
+	DSPWB dspWB (
+		.clk							(clk								),
+		.mem_out					(MEM_mem_out				),
+		.write_back_en		(MEM_write_en_out		),
+		.write_back				(WB_write_back			),
+		.regFile_write_en	(WB_regFile_write_en));
 
 	reg [31:0] clk_cycle;	//count clock cycles
 
@@ -258,3 +270,4 @@ module DSP (
 
 
 endmodule
+
