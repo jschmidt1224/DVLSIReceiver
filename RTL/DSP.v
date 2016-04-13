@@ -208,7 +208,7 @@ module DSP (
 		.read_data_2			(REGFILE_read_data_2	    ),
 		.read_data_3			(REGFILE_read_data_3	    ),
 		.write_data				(WB_write_back			      ),
-		.write_en					(WB_regFil_write_en			  ));
+		.write_en					(WB_regFile_write_en			  ));
 
 	ALU alu(
 		.opcode						(DECFF_alu_mode	),

@@ -18,7 +18,7 @@ module DSPWB (
 
   input         [`REG_WORD_LEN-1:0]   mem_out;
   output  wire                        regFile_write_en;
-  output  reg   [`REG_WORD_LEN-1:0]   write_back;
+  output  wire	[`REG_WORD_LEN-1:0]   write_back;
 
   assign regFile_write_en = ~clk & write_back_en;
   assign write_back = mem_out;
