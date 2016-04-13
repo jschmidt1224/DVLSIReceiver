@@ -113,6 +113,16 @@ module DSP (
 
 					wire	[`REG_WORD_LEN-1:0]		MEM_mem_out;
 					wire												MEM_write_en_out;
+					
+					wire	[`MEM_FF_LEN-1:0]			MEMFF_in;
+					wire	[`MEM_FF_LEN-1:0]			MEMFF_out;
+					
+					wire	[`REG_WORD_LEN-1:0]		MEMFF_mem_out;
+					wire												MEMFF_wb;
+					wire	[`FLOW_MODE_LEN-1:0]	MEMFF_flow_mode;
+					wire												MEMFF_branch_flag;
+					wire	[`REG_ADDR_LEN-1:0]		MEMFF_reg_dest;
+					wire	[`MEM_ADDR_LEN-1:0]		MEMFF_jaddress;
 
 					wire	[`REG_WORD_LEN-1:0]		WB_write_back;
 					wire												WB_regFile_write_en;
@@ -126,8 +136,9 @@ module DSP (
 
 					wire												clk_gated;
 
-	assign clk_gated = (clk & DECODE_branch_flag & DECFF_branch_flag & ALUFF_branch_flag) | (clk & rst);
+	assign clk_gated = (clk & DECODE_branch_flag & DECFF_branch_flag & ALUFF_branch_flag & MEMFF_branch_flag) | (clk & rst);
 	assign BRFF_in = {BRANCH_jump_addr, BRANCH_jump_flag};
+	
 	assign DECFF_in = {DECODE_alu_mode, DECODE_mem_mode, DECODE_flow_mode, DECODE_write_back_en, DECODE_branch_flag, DECODE_shamt, DECODE_reg_dest, DECODE_data_s1, DECODE_data_s2, DECODE_data_s3, DECODE_jaddress};
 
 	assign DECFF_alu_mode = 			DECFF_out		[`DEC_FF_ALU-1		:		`DEC_FF_MEM			];
@@ -144,15 +155,24 @@ module DSP (
 
 	assign ALUFF_in = {DECFF_mem_mode, DECFF_flow_mode, DECFF_write_back_en, DECFF_branch_flag, DECFF_reg_dest, DECFF_jaddress, DECFF_data_s1, DECFF_data_s2, ALU_out};
 
-	assign ALUFF_mem_mode = 			ALUFF_out		[`ALU_FF_MEM-1		:		`ALU_FF_FLOW		];
-	assign ALUFF_flow_mode = 			ALUFF_out		[`ALU_FF_FLOW-1		:		`ALU_FF_WB			];
-	assign ALUFF_write_back_en = 	ALUFF_out		[`ALU_FF_WB-1			:		`ALU_FF_BRFL		];
-	assign ALUFF_branch_flag = 		ALUFF_out		[`ALU_FF_BRFL-1		:		`ALU_FF_DEST		];
-	assign ALUFF_reg_dest = 			ALUFF_out		[`ALU_FF_DEST-1		:		`ALU_FF_JADDR		];
-	assign ALUFF_jaddress = 			ALUFF_out		[`ALU_FF_JADDR-1	:		`ALU_FF_S1			];
-	assign ALUFF_data_s1 = 				ALUFF_out		[`ALU_FF_S1-1			:		`ALU_FF_S2			];
-	assign ALUFF_data_s2 = 				ALUFF_out		[`ALU_FF_S2-1			:		`ALU_FF_ALUOUT	];
-	assign ALUFF_alu_out = 				ALUFF_out		[`ALU_FF_ALUOUT-1	:		0								];
+	assign ALUFF_mem_mode 			=		ALUFF_out		[`ALU_FF_MEM-1		:		`ALU_FF_FLOW		];
+	assign ALUFF_flow_mode 			=		ALUFF_out		[`ALU_FF_FLOW-1		:		`ALU_FF_WB			];
+	assign ALUFF_write_back_en	= 	ALUFF_out		[`ALU_FF_WB-1			:		`ALU_FF_BRFL		];
+	assign ALUFF_branch_flag 		=		ALUFF_out		[`ALU_FF_BRFL-1		:		`ALU_FF_DEST		];
+	assign ALUFF_reg_dest 			=		ALUFF_out		[`ALU_FF_DEST-1		:		`ALU_FF_JADDR		];
+	assign ALUFF_jaddress 			=		ALUFF_out		[`ALU_FF_JADDR-1	:		`ALU_FF_S1			];
+	assign ALUFF_data_s1 				=		ALUFF_out		[`ALU_FF_S1-1			:		`ALU_FF_S2			];
+	assign ALUFF_data_s2 				=		ALUFF_out		[`ALU_FF_S2-1			:		`ALU_FF_ALUOUT	];
+	assign ALUFF_alu_out 				=		ALUFF_out		[`ALU_FF_ALUOUT-1	:		0								];
+	
+	assign MEMFF_in = {MEM_mem_out, MEM_write_en_out, ALUFF_flow_mode, ALUFF_branch_flag, ALUFF_reg_dest, ALUFF_jaddress};
+	
+	assign MEMFF_mem_out 			=		MEMFF_out		[`MEM_FF_OUT-1		:			`MEM_FF_WB			];
+	assign MEMFF_wb 					=		MEMFF_out		[`MEM_FF_WB-1			:			`MEM_FF_FLOW		];
+	assign MEMFF_flow_mode 		=		MEMFF_out		[`MEM_FF_FLOW-1		:			`MEM_FF_BRFL		];
+	assign MEMFF_branch_flag	=		MEMFF_out		[`MEM_FF_BRFL-1		:			`MEM_FF_DEST		];
+	assign MEMFF_reg_dest 		=		MEMFF_out		[`MEM_FF_DEST-1		:			`MEM_FF_JADDR		];
+	assign MEMFF_jaddress 		=		MEMFF_out		[`MEM_FF_JADDR-1	:			0								];
 
 	DSPFetch dspFetch(
 		.clk							(clk_gated									),
@@ -203,7 +223,7 @@ module DSP (
 		.read_addr_1			(DECODE_reg_addr1			    ),
 		.read_addr_2			(DECODE_reg_addr2			    ),
 		.read_addr_3			(DECODE_reg_addr3			    ),
-		.write_addr				(ALUFF_reg_dest			    	),
+		.write_addr				(MEMFF_reg_dest			    	),
 		.read_data_1			(REGFILE_read_data_1	    ),
 		.read_data_2			(REGFILE_read_data_2	    ),
 		.read_data_3			(REGFILE_read_data_3	    ),
@@ -226,9 +246,9 @@ module DSP (
 
 
 	DSPBranch dspBranch(
-		.ALU_result				(ALU_out							),
-		.flow_mode				(ALUFF_flow_mode			),
-		.address					(ALUFF_jaddress			),
+		.ALU_result				(MEMFF_mem_out				),
+		.flow_mode				(MEMFF_flow_mode			),
+		.address					(MEMFF_jaddress				),
 		.jump_addr				(BRANCH_jump_addr			),
 		.jump_flag				(BRANCH_jump_flag			));
 
@@ -255,11 +275,17 @@ module DSP (
 		.mem_out						(MEM_mem_out							),
 		.write_back_en_in		(ALUFF_write_back_en			),
 		.write_back_en_out	(MEM_write_en_out					));
+		
+	FF #(`MEM_FF_LEN) MEMFF(
+		.data			(MEMFF_in		),
+		.trigger	(clk				),
+		.rst			(rst				),
+		.q				(MEMFF_out	));
 
 	DSPWB dspWB (
 		.clk							(clk								),
-		.mem_out					(MEM_mem_out				),
-		.write_back_en		(MEM_write_en_out		),
+		.mem_out					(MEMFF_mem_out			),
+		.write_back_en		(MEMFF_wb						),
 		.write_back				(WB_write_back			),
 		.regFile_write_en	(WB_regFile_write_en));
 

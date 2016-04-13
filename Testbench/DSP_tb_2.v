@@ -97,7 +97,7 @@ module DSP_tb();
 
 //START PROCESSOR SIM
     #1  rst = `FALSE;
-    #40 $stop;
+    #80 $stop;
   end
 //RUN PROCESSOR
 
